@@ -10,7 +10,7 @@ variables:
   artifactName: 'MyBeers.Api'
 
 steps:
-- script: dotnet publish --configuration $(BuildConfiguration) --output "$(Build.ArtifactStagingDirectory)/Output"  /p:Version=$(Build.BuildNumber) **/*.csproj
+- script: dotnet publish --configuration $(BuildConfiguration) --output "$(Build.ArtifactStagingDirectory)/Output"  /p:Version=$(Build.BuildNumber) src/MyBeers.Api/*.csproj
   displayName: .NET Publish $(ArtifactName)
 
 - task: ArchiveFiles@2
