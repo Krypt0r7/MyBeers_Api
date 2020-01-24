@@ -16,6 +16,8 @@ namespace MyBeers.Api.Utils
             CreateMap<UserDto, User>();
             CreateMap<UserAuthenticateDto, User>();
             CreateMap<UserRegisterDto, User>();
+
+            CreateMap<SystemetDto, BeerData>().ForMember(f => f.ProductName, o => o.MapFrom(x => x.ProductNameThin + " " + x.ProductNameBold));
         }
     }
 }

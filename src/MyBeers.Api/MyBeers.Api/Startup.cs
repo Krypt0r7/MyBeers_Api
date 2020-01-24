@@ -89,6 +89,7 @@ namespace MyBeers.Api
             });
 
             services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IBeerService, BeerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
