@@ -108,6 +108,8 @@ namespace MyBeers.Api
 
             app.UseRouting();
 
+            app.UseHttpsRedirection();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
