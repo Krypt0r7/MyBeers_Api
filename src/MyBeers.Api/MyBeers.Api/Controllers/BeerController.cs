@@ -21,18 +21,16 @@ namespace MyBeers.Api.Controllers
             _beerService = beerService;
         }
         [HttpGet]
-        public async Task<IActionResult> BeersAsync()
+        public async Task<IActionResult> BeersAsync([FromQuery]string userId)
         {
-            var user = HttpContext.User.Identity.Name;
-            var beers = await _beerService.GetBeersAsync(user);
+            var beers = await _beerService.GetBeersAsync(userId);
             return Ok(beers);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveBeerAsync([FromBody]SystemetDto systemetDto)
+        public async Task<IActionResult> SaveBeerAsync([FromBody]SystemetDto systemetDto, string userId)
         {
-            var user = HttpContext.User.Identity.Name;
-            var beer = await _beerService.SaveBeerAsync(systemetDto, user);
+            var beer = await _beerService.SaveBeerAsync(systemetDto, userId);
             return Ok(beer);
         }
 
