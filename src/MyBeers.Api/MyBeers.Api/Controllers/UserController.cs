@@ -70,5 +70,11 @@ namespace MyBeers.Api.Controllers
             return Ok(await _userService.GetAsync());
         }
 
+        [HttpGet("me")]
+        public async Task<IActionResult> LoggedInUser()
+        {
+            return Ok(await _userService.GetByIdAsync(HttpContext.User.Identity.Name));
+        }
+
     }
 }
