@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyBeers.Api.Data;
 using MyBeers.Api.Dtos;
 using MyBeers.Api.Services;
 
@@ -34,6 +35,18 @@ namespace MyBeers.Api.Controllers
             var user = HttpContext.User.Identity.Name;
             var beer = await _beerService.SaveBeerAsync(systemetDto, user);
             return Ok(beer);
+        }
+
+        [HttpPost("byProd")]
+        public async Task<IActionResult> SaveBeerProdNumAsync(int productNumber)
+        {
+            var user = HttpContext.User.Identity.Name;
+            var beer = await _beerService.SaveBeerProdNumberAsync(productNumber, user);
+            if (beer != null)
+            {
+                return Ok();
+            }
+            return BadRequest("Error");
         }
 
         [HttpPut("{id}")]

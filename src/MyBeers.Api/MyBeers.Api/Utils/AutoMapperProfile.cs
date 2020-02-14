@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MyBeers.Api.Data;
+using MyBeers.Api.DataSystemet;
 using MyBeers.Api.Dtos;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace MyBeers.Api.Utils
             CreateMap<UserRegisterDto, User>();
 
             CreateMap<SystemetDto, BeerData>().ForMember(f => f.ProductName, o => o.MapFrom(x => x.ProductNameThin + " " + x.ProductNameBold));
+            CreateMap<SystemetBeerIn, BeerData>().ForMember(f => f.ProductName, o => o.MapFrom(x => x.ProductNameThin + " " + x.ProductNameBold));
+
         }
     }
 }
