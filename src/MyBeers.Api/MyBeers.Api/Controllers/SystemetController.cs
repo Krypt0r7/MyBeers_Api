@@ -22,5 +22,11 @@ namespace MyBeers.Api.Controllers
         {
             return Ok(await _systemetService.SearchSystemetAsync(search));
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> SearchBeer(int id)
+        {
+            return Ok(await _systemetService.SearchSingleBeer(id));
+        }
     }
 }

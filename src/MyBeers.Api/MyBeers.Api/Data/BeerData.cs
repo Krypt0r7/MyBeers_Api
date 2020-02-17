@@ -28,5 +28,6 @@ namespace MyBeers.Api.Data
         public string Taste { get; set; }
         public string Assortment { get; set; }
         public double RecycleFee { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

@@ -18,14 +18,17 @@ namespace MyBeers.Api.Services
     {
         private readonly IMongoCollection<Beer> _beer;
         private readonly IMapper _mapper;
+        private readonly ISystemetService _systemetService;
         public BeerService(
             IMapper mapper,
-            IMongoSettings mongoSettings)
+            IMongoSettings mongoSettings,
+            ISystemetService systemetService)
         {
             var client = new MongoClient(mongoSettings.ConnectionString);
             var database = client.GetDatabase(mongoSettings.DatabaseName);
             _beer = database.GetCollection<Beer>(mongoSettings.BeerCollection);
             _mapper = mapper;
+            _systemetService = systemetService;
         }
 
         public async Task<Beer> SaveBeerAsync(SystemetDto systemetDto, string userId)
@@ -80,36 +83,23 @@ namespace MyBeers.Api.Services
 
         public async Task<Beer> SaveBeerProdNumberAsync(int productNumber, string userId)
         {
-            var client = new HttpClient
+            var mapppedBeer = await _systemetService.SearchSingleBeer(productNumber);
+            if (mapppedBeer == null)
+                return null;
+
+            mapppedBeer.ImageUrl = BuildImageUrls.BuildUrl((int)mapppedBeer.ProductId);
+
+            var beer = new Beer
             {
-                BaseAddress = new Uri("https://api-extern.systembolaget.se/")
+                Added = DateTime.UtcNow,
+                UserId = userId,
+                YPK = Math.Round(mapppedBeer.Volume * mapppedBeer.AlcoholPercentage / 40 / mapppedBeer.Price, 3),
+                BeerData = mapppedBeer
             };
 
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "ce26456ac64b43a38dbc40dc6925177c");
+            await _beer.InsertOneAsync(beer);
 
-            var response = await client.GetAsync($"product/v1/product/search?SearchQuery={productNumber}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                var objects = JsonConvert.DeserializeObject<BeerListModel>(data);
-
-                var mapppedBeer = _mapper.Map<BeerData>(objects.Hits[0]);
-
-                var beer = new Beer
-                {
-                    Added = DateTime.UtcNow,
-                    UserId = userId,
-                    YPK = Math.Round(mapppedBeer.Volume * mapppedBeer.AlcoholPercentage / 40 / mapppedBeer.Price, 3),
-                    BeerData = mapppedBeer
-                };
-
-                await _beer.InsertOneAsync(beer);
-
-                return beer;
-            }
-            return null;
-
+            return beer;
         }
     }
 }

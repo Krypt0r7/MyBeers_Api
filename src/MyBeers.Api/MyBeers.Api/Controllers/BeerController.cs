@@ -44,7 +44,7 @@ namespace MyBeers.Api.Controllers
             var beer = await _beerService.SaveBeerProdNumberAsync(productNumber, user);
             if (beer != null)
             {
-                return Ok();
+                return Ok(beer);
             }
             return BadRequest("Error");
         }
