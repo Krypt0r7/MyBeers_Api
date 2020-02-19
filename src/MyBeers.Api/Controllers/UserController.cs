@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,11 @@ namespace MyBeers.Api.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IMapper _mapper;
+        public UserController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
         [AllowAnonymous]
@@ -61,20 +64,49 @@ namespace MyBeers.Api.Controllers
             var user = await _userService.GetByIdAsync(id);
             if (user == null)
                 return BadRequest("not found");
-            return Ok(user);
+            return Ok(_mapper.Map<UserDto>(user));
         }
 
         [HttpGet]
         public async Task<IActionResult> AllUsersAsync()
         {
-            return Ok(await _userService.GetAsync());
+            var users = await _userService.GetAsync();
+            return Ok(_mapper.Map<List<UserDto>>(users));
         }
 
         [HttpGet("me")]
         public async Task<IActionResult> LoggedInUser()
         {
-            return Ok(await _userService.GetByIdAsync(HttpContext.User.Identity.Name));
+            var user = await _userService.GetByIdAsync(HttpContext.User.Identity.Name);
+            return Ok(_mapper.Map<UserDto>(user));
         }
+
+        [HttpPut("add-beer")]
+        public async Task<IActionResult> AddBeerToUser(int productNumber)
+        {
+            try
+            {
+                var result = await _userService.AddBeerToUserAsync(HttpContext.User.Identity.Name, productNumber);
+                if (result.IsAcknowledged)
+                    return Ok();
+                return BadRequest("Unable to update beerlist");
+            }
+            catch (UserException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("remove-beer")]
+        public async Task<IActionResult> RemoveBeerFromUser(string beerId)
+        {
+            
+            var result = await _userService.RemoveBeerFromUserAsync(HttpContext.User.Identity.Name, beerId);
+            if(result.IsAcknowledged)
+                return Ok();
+            return BadRequest("Unable to update beerlist");
+        }
+
 
     }
 }

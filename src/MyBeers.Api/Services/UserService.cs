@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MyBeers.Api.Data;
 using MyBeers.Api.Dtos;
@@ -21,17 +22,20 @@ namespace MyBeers.Api.Services
         private readonly IMongoCollection<User> _user;
         readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
+        private readonly IBeerService _beerService;
 
         public UserService(
             IMapper mapper,
             IOptions<AppSettings> appSettings,
-            IMongoSettings mongoSettings)
+            IMongoSettings mongoSettings,
+            IBeerService beerService)
         {
             var client = new MongoClient(mongoSettings.ConnectionString);
             var database = client.GetDatabase(mongoSettings.DatabaseName);
             _user = database.GetCollection<User>(mongoSettings.UserCollection);
             _appSettings = appSettings.Value;
             _mapper = mapper;
+            _beerService = beerService;
         }
 
 
@@ -67,15 +71,15 @@ namespace MyBeers.Api.Services
             return userDto;
         }
 
-        public async Task<UserDto> CreateAsync(UserRegisterDto userDto)
+        public async Task<User> CreateAsync(UserRegisterDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
 
             if (string.IsNullOrWhiteSpace(userDto.Password))
                 throw new UserException("Password is required");
 
-            if (await _user.Find(x => x.Email == user.Email).FirstOrDefaultAsync() != null)
-                throw new UserException("Email \"" + user.Email + "\" already exists");
+            if (await _user.Find(x => x.Username == user.Username).FirstOrDefaultAsync() != null)
+                throw new UserException("Email \"" + user.Username + "\" already exists");
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
@@ -86,18 +90,18 @@ namespace MyBeers.Api.Services
             _user.InsertOne(user);
             var createdUserDto = _mapper.Map<UserDto>(user);
 
-            return createdUserDto;
+            return user;
         }
 
-        public async Task<List<UserDto>> GetAsync()
+        public async Task<List<User>> GetAsync()
         {
             var users = await _user.Find(x => true).ToListAsync();
-            var userDtos = _mapper.Map<List<UserDto>>(users);
-            return userDtos;
+            return users;
         }
 
-        public async Task<UserDto> GetByIdAsync(string id) =>
-            _mapper.Map<UserDto>(await _user.Find(x => x.Id == id).FirstOrDefaultAsync());
+
+        public async Task<User> GetByIdAsync(string id) =>
+            await _user.Find(x => x.Id == id).FirstOrDefaultAsync();
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
@@ -126,8 +130,44 @@ namespace MyBeers.Api.Services
                     if (computedHash[i] != storedHash[i]) return false;
                 }
             }
-
             return true;
+        }
+
+        public async Task<UpdateResult> AddBeerToUserAsync(string id, int productId)
+        {
+            var user = await _user.Find(f => f.Id == id).FirstOrDefaultAsync();
+
+            var beer = await _beerService.SaveBeerProdNumberAsync(productId);
+
+            if (user.BeerIds == null)
+                user.BeerIds = new List<string>();
+
+            if (user.BeerIds.Contains(beer.Id))
+                throw new UserException("Beer already added");
+            
+            user.BeerIds.Add(beer.Id);
+
+            var userDto = _mapper.Map<UserDto>(user);
+
+            var filter = Builders<User>.Filter.Eq(x => x.Id, id);
+            var update = Builders<User>.Update
+                .Set(x => x.BeerIds, user.BeerIds);
+            var result = await _user.UpdateOneAsync(filter, update);
+            
+            return result;
+        }
+
+        public async Task<UpdateResult> RemoveBeerFromUserAsync(string id, string beerId)
+        {
+            var user = await _user.Find(f => f.Id == id).FirstOrDefaultAsync();
+
+            var beerList = user.BeerIds;
+            beerList.Remove(beerId);
+
+            var filter = Builders<User>.Filter.Eq(x => x.Id, id);
+            var update = Builders<User>.Update.Set(x => x.BeerIds, beerList);
+            var updateResult = await _user.UpdateOneAsync(filter, update);
+            return updateResult;
         }
     }
 }

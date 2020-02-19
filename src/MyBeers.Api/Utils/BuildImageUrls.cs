@@ -11,7 +11,7 @@ namespace MyBeers.Api.Utils
     {
         public static string BuildUrl(int id)
         {
-            var url = $"https://sb-product-media-prod.azureedge.net/productimages/{id}/{id}_300.png";
+            var url = $"https://sb-product-media-prod.azureedge.net/productimages/{id}/{id}_200.png";
             if (IsValidUrl(url))
             {
                 return url;

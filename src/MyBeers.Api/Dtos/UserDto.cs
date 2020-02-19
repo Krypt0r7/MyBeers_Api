@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyBeers.Api.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,5 +12,6 @@ namespace MyBeers.Api.Dtos
         public string Username { get; set; }
         public string Email { get; set; }
         public string Token { get; set; }
+        public List<Beer> Beers { get; set; }
     }
 }
