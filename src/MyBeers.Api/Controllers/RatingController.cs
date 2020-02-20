@@ -50,5 +50,11 @@ namespace MyBeers.Api.Controllers
             
         }
 
+        [HttpGet]
+        public async Task<IActionResult> AllRatings()
+        {
+            return Ok();
+        }
+
     }
 }

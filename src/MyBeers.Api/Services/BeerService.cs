@@ -54,9 +54,9 @@ namespace MyBeers.Api.Services
             return await _beer.Find(x => x.BeerData.ProductNumber == productNumber).FirstOrDefaultAsync();
         }
 
-        public async Task<List<Beer>> GetUsersBeerAsync(User user)
+        public async Task<List<Beer>> GetUsersBeerAsync(List<string> beerIds)
         {
-            return await _beer.Find(f => user.BeerIds.Contains(f.Id)).ToListAsync();
+            return await _beer.Find(f => beerIds.Contains(f.Id)).ToListAsync();
         }
 
         public async Task<Beer> GetBeerByIdAsync(string id)

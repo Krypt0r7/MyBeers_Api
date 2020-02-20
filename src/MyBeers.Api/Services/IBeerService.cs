@@ -9,7 +9,7 @@ namespace MyBeers.Api.Services
     public interface IBeerService
     {
         Task<Beer> SaveBeerProdNumberAsync(int productNumber);
-        Task<List<Beer>> GetUsersBeerAsync(User user);
+        Task<List<Beer>> GetUsersBeerAsync(List<string> beerIds);
         Task<Beer> GetBeerByIdAsync(string id);
     }
 }
