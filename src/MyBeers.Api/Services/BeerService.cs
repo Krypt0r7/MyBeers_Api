@@ -19,7 +19,7 @@ namespace MyBeers.Api.Services
         private readonly IMongoCollection<Beer> _beer;
         private readonly ISystemetService _systemetService;
         public BeerService(
-            IMongoSettings mongoSettings,
+            IDBSettings mongoSettings,
             ISystemetService systemetService)
         {
             var client = new MongoClient(mongoSettings.ConnectionString);

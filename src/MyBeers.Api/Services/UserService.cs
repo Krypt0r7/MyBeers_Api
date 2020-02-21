@@ -27,7 +27,7 @@ namespace MyBeers.Api.Services
         public UserService(
             IMapper mapper,
             IOptions<AppSettings> appSettings,
-            IMongoSettings mongoSettings,
+            IDBSettings mongoSettings,
             IBeerService beerService)
         {
             var client = new MongoClient(mongoSettings.ConnectionString);

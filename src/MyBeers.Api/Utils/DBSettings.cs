@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MyBeers.Api.Utils
 {
-    public interface IMongoSettings
+    public interface IDBSettings
     {
         string BeerCollection { get; set; }
         string ConnectionString { get; set; }
@@ -14,7 +14,7 @@ namespace MyBeers.Api.Utils
         string RatingCollection { get; set; }
     }
 
-    public class MongoSettings : IMongoSettings
+    public class DBSettings : IDBSettings
     {
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }

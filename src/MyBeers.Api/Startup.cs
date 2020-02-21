@@ -37,10 +37,10 @@ namespace MyBeers.Api
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             
-            services.Configure<MongoSettings>(
-                Configuration.GetSection(nameof(MongoSettings)));
-            services.AddSingleton<IMongoSettings>(sp =>
-                sp.GetRequiredService<IOptions<MongoSettings>>().Value);
+            services.Configure<DBSettings>(
+                Configuration.GetSection(nameof(DBSettings)));
+            services.AddSingleton<IDBSettings>(sp =>
+                sp.GetRequiredService<IOptions<DBSettings>>().Value);
 
             services.AddRouting(opt => opt.LowercaseUrls = true);
 

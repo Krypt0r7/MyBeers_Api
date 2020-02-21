@@ -14,7 +14,7 @@ namespace MyBeers.Api.Services
     {
         private readonly IMongoCollection<Rating> _rating;
         private readonly IMapper _mapper;
-        public RatingService(IMongoSettings settings, IMapper mapper)
+        public RatingService(IDBSettings settings, IMapper mapper)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
