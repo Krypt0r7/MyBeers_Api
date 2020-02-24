@@ -35,18 +35,14 @@ namespace MyBeers.Api.Services
             await _rating.InsertOneAsync(rating);
         }
 
-        public async Task<Rating> GetRatingByIdAsync(string id)
-        {
-            var rating = await _rating.Find(f => f.Id == id).FirstOrDefaultAsync();
-            return rating;
-        }
+        public async Task<Rating> GetRatingByIdAsync(string id) => await _rating.Find(f => f.Id == id).FirstOrDefaultAsync();
 
-        public async Task<List<Rating>> GetRatingsByUserId(string userId)
-        {
-            var ratings = await _rating.Find(f => f.UserId == userId).ToListAsync();
-            return ratings;
-        }
+        public async Task<List<Rating>> GetRatingsAsync(List<string> beerIds) =>  await _rating.Find(f => beerIds.Contains(f.BeerId)).ToListAsync();
 
+        public async Task<List<Rating>> GetRatingsAsync() => await _rating.Find(f => true).ToListAsync();
+
+        public async Task<List<Rating>> GetRatingsByUserId(string userId) => await _rating.Find(f => f.UserId == userId).ToListAsync();
+        
         public async Task<UpdateResult> UpdateRatingAsync(string id, int rating)
         {
             var filter = Builders<Rating>.Filter.Eq(f => f.Id, id);

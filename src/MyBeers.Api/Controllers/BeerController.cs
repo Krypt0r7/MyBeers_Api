@@ -34,7 +34,7 @@ namespace MyBeers.Api.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("{by-user}")]
         public async Task<IActionResult> BeersByUSerAsync()
         {
             var userId = HttpContext.User.Identity.Name;
@@ -53,6 +53,46 @@ namespace MyBeers.Api.Controllers
             }
 
             return Ok(beersDto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> BeersAsync()
+        {
+            var beers = await _beerService.GetAllBeersAsync();
+            var beerRatings = await _ratingService.GetRatingsAsync();
+            var users = await _userService.GetAsync();
+
+            var beerDtos = new List<BeersAndRatingsQueryDto>();
+
+            foreach (var beer in beers)
+            {
+                var beerDto = new BeersAndRatingsQueryDto
+                {
+                    Id = beer.Id,
+                    Added = beer.Added,
+                    BeerData = beer.BeerData,
+                    YPK = beer.YPK,
+                };
+
+                var ratingList = beerRatings.Where(f => f.BeerId == beer.Id).ToList();
+                foreach (var rating in ratingList)
+                {
+                    beerDto.Ratings = new List<RatingAndUsersQueryDto>();
+
+                    beerDto.Ratings.Add(new RatingAndUsersQueryDto
+                    {
+                        Id = rating.Id,
+                        CreatedTime = rating.CreatedTime,
+                        OverallRating = rating.OverallRating,
+                        User = _mapper.Map<UserDto>(users.Where(x => x.Id == rating.UserId).First())
+                    });
+                }
+
+                beerDtos.Add(beerDto);
+            }
+
+            return Ok(beerDtos);
+
         }
 
         [HttpPost]

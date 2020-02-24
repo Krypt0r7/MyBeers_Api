@@ -66,5 +66,8 @@ namespace MyBeers.Api.Services
                 return null;
             return beer;
         }
+
+        public async Task<List<Beer>> GetAllBeersAsync() =>  await _beer.Find(f => true).ToListAsync();
+     
     }
 }

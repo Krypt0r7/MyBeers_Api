@@ -21,9 +21,13 @@ namespace MyBeers.Api.Utils
             CreateMap<SystemetDto, BeerData>().ForMember(f => f.ProductName, o => o.MapFrom(x => x.ProductNameThin + " " + x.ProductNameBold));
             CreateMap<SystemetBeerIn, BeerData>().ForMember(f => f.ProductName, o => o.MapFrom(x => x.ProductNameThin + " " + x.ProductNameBold));
 
+            CreateMap<Beer, BeerDto>();
             CreateMap<Beer, BeerQueryDto>();
+            CreateMap<Beer, BeersAndRatingsQueryDto>();
 
             CreateMap<Rating, RatingQueryDto>();
+            CreateMap<Rating, RatingAndUsersQueryDto>();
+
         }
     }
 }
