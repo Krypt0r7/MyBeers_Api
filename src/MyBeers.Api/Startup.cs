@@ -31,7 +31,11 @@ namespace MyBeers.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddCors(options => {
+                options.AddPolicy("AllowAllOrigins", builder => builder.AllowAnyOrigin());
+                options.AddPolicy("AllowAllMethods", builder => builder.AllowAnyMethod());
+                options.AddPolicy("AllowAllHeaders", builder => builder.AllowAnyHeader());
+            });
 
             services.AddControllers();
 
@@ -102,7 +106,7 @@ namespace MyBeers.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(sp =>sp
+            app.UseCors(sp => sp
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()

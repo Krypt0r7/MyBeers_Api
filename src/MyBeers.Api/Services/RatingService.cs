@@ -35,7 +35,7 @@ namespace MyBeers.Api.Services
             await _rating.InsertOneAsync(rating);
         }
 
-        public async Task<Rating> GetRatingByIdAsync(string id) => await _rating.Find(f => f.Id == id).FirstOrDefaultAsync();
+        public async Task<Rating> GetRatingAsync(string id) => await _rating.Find(f => f.Id == id).FirstOrDefaultAsync();
 
         public async Task<List<Rating>> GetRatingsAsync(List<string> beerIds) =>  await _rating.Find(f => beerIds.Contains(f.BeerId)).ToListAsync();
 

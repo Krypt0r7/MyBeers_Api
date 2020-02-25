@@ -34,7 +34,7 @@ namespace MyBeers.Api.Controllers
         }
 
 
-        [HttpGet("{by-user}")]
+        [HttpGet("by-user")]
         public async Task<IActionResult> BeersByUSerAsync()
         {
             var userId = HttpContext.User.Identity.Name;
@@ -53,6 +53,27 @@ namespace MyBeers.Api.Controllers
             }
 
             return Ok(beersDto);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> BeerAsync(string id)
+        {
+            var userid = HttpContext.User.Identity.Name;
+            var beer = await _beerService.GetBeerByIdAsync(id);
+            var ratings = await _ratingService.GetRatingsByUserId(userid);
+
+            var beerDto = new BeerQueryDto
+            {
+                Added = beer.Added,
+                BeerData = beer.BeerData,
+                Id = beer.Id,
+                YPK = beer.YPK,
+            };
+            var rating = ratings.FirstOrDefault(x => x.BeerId == beer.Id);
+            if (rating != null)
+                beerDto.Rating = _mapper.Map<RatingQueryDto>(rating);
+
+            return Ok(beerDto);
         }
 
         [HttpGet]
