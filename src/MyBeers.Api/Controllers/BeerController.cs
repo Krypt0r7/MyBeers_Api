@@ -41,6 +41,11 @@ namespace MyBeers.Api.Controllers
 
             var user = await _userService.GetByIdAsync(userId);
 
+            if (user.BeerIds == null)
+            {
+                return BadRequest("No beers added");
+            }
+
             var beers = await _beerService.GetUsersBeerAsync(user.BeerIds);
 
             var beersDto = _mapper.Map<List<BeerQueryDto>>(beers);
@@ -76,6 +81,37 @@ namespace MyBeers.Api.Controllers
             return Ok(beerDto);
         }
 
+        [HttpGet("{id}/ratings")]
+        public async Task<IActionResult> BeersRatingsAsync (string id)
+        {
+            var beer = await _beerService.GetBeerByIdAsync(id);
+            var ratings = await _ratingService.GetRatingsAsync(new List<string> { id });
+            var users = await _userService.GetAsync();
+
+            var beerDto = new BeerAndRatingsQueryDto
+            {
+                Added = beer.Added,
+                BeerData = beer.BeerData,
+                Id = beer.Id,
+                YPK = beer.YPK
+            };
+
+            beerDto.Ratings = new List<RatingAndUsersQueryDto>();
+            
+            foreach (var rating in ratings)
+            {
+                beerDto.Ratings.Add(new RatingAndUsersQueryDto
+                {
+                    Id = rating.Id,
+                    CreatedTime = rating.CreatedTime,
+                    OverallRating = rating.OverallRating,
+                    Description = rating.Description,
+                    User = _mapper.Map<UserDto>(users.Where(x => x.Id == rating.UserId).First())
+                });
+            }
+            return Ok(beerDto);
+        }
+
         [HttpGet]
         public async Task<IActionResult> BeersAsync()
         {
@@ -83,11 +119,11 @@ namespace MyBeers.Api.Controllers
             var beerRatings = await _ratingService.GetRatingsAsync();
             var users = await _userService.GetAsync();
 
-            var beerDtos = new List<BeersAndRatingsQueryDto>();
+            var beerDtos = new List<BeerAndRatingsQueryDto>();
 
             foreach (var beer in beers)
             {
-                var beerDto = new BeersAndRatingsQueryDto
+                var beerDto = new BeerAndRatingsQueryDto
                 {
                     Id = beer.Id,
                     Added = beer.Added,
@@ -105,6 +141,7 @@ namespace MyBeers.Api.Controllers
                         Id = rating.Id,
                         CreatedTime = rating.CreatedTime,
                         OverallRating = rating.OverallRating,
+                        Description = rating.Description,
                         User = _mapper.Map<UserDto>(users.Where(x => x.Id == rating.UserId).First())
                     });
                 }

@@ -9,6 +9,7 @@ namespace MyBeers.Api.Dtos
     {
         public DateTime CreatedTime { get; set; }
         public int OverallRating { get; set; }
+        public string Description { get; set; }
         public UserDto User { get; set; }
         public BeerDto Beer { get; set; }
     }

@@ -23,7 +23,7 @@ namespace MyBeers.Api.Utils
 
             CreateMap<Beer, BeerDto>();
             CreateMap<Beer, BeerQueryDto>();
-            CreateMap<Beer, BeersAndRatingsQueryDto>();
+            CreateMap<Beer, BeerAndRatingsQueryDto>();
 
             CreateMap<Rating, RatingQueryDto>();
             CreateMap<Rating, RatingAndUsersQueryDto>();

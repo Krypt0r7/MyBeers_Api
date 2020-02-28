@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MyBeers.Api.Dtos
 {
-    public class BeersAndRatingsQueryDto
+    public class BeerAndRatingsQueryDto
     {
         public string Id { get; set; }
         public DateTime Added { get; set; }

@@ -41,6 +41,7 @@ namespace MyBeers.Api.Controllers
                 {
                     Beer = await _beerService.GetBeerByIdAsync(ratingDto.BeerId),
                     OverallRating = ratingDto.Rating,
+                    Description = ratingDto.Description,
                     User = await _userService.GetByIdAsync(HttpContext.User.Identity.Name)
                 };
 
@@ -70,12 +71,15 @@ namespace MyBeers.Api.Controllers
                     Beer = _mapper.Map<BeerDto>(beers.First(x => x.Id == rating.BeerId)),
                     CreatedTime = rating.CreatedTime,
                     OverallRating = rating.OverallRating,
+                    Description = rating.Description,
                     User = _mapper.Map<UserDto>(users.First(x => x.Id == rating.UserId))
                 });
             }
 
             return Ok(ratingList.OrderByDescending(x => x.CreatedTime));
         }
+
+        
 
     }
 }

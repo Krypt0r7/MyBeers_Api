@@ -31,10 +31,10 @@ namespace MyBeers.Api.Services
 
         public async Task<Beer> SaveBeerProdNumberAsync(int productNumber)
         {
-            var beerExixting = await _beer.Find(x => x.BeerData.ProductNumber == productNumber).FirstOrDefaultAsync();
+            var beerExisting = await _beer.Find(x => x.BeerData.ProductNumber == productNumber).FirstOrDefaultAsync();
 
-            if (beerExixting != null)
-                return beerExixting;
+            if (beerExisting != null)
+                return beerExisting;
 
             var mapppedBeer = await _systemetService.SearchSingleBeer(productNumber);
             if (mapppedBeer == null)
