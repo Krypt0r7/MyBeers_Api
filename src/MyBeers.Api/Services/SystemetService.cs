@@ -22,6 +22,27 @@ namespace MyBeers.Api.Services
             HttpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "ce26456ac64b43a38dbc40dc6925177c");
         }
 
+        public async Task<List<BeerData>> GetNews()
+        {
+            var today = DateTime.UtcNow.Date;
+            var twoWeeksFromNow = DateTime.UtcNow.AddDays(14).Date;
+            var response = await HttpClient.GetAsync($"product/v1/product/search?Country=Sverige&SubCategory=Öl&SellStartDateFrom={today}&SellStartDateTo={twoWeeksFromNow}");
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var objects = JsonConvert.DeserializeObject<BeerListModel>(data);
+
+                var mappedBeer = _mapper.Map<List<BeerData>>(objects.Hits);
+
+                foreach (var beer in mappedBeer)
+                {
+                    beer.ImageUrl = BuildImageUrls.BuildUrl((int)beer.ProductId);
+                }
+                return mappedBeer;
+            }
+            return new List<BeerData>();
+        }
+
         public async Task<BeerData> SearchSingleBeer(int id)
         {
             var response = await HttpClient.GetAsync($"product/v1/product/search?SearchQuery={id}");

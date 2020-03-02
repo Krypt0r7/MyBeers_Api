@@ -21,7 +21,7 @@ namespace MyBeers.Api.Controllers
         private readonly IRatingService _ratingService;
         private readonly IMapper _mapper;
         public RatingController(
-            IBeerService beerService, 
+            IBeerService beerService,
             IUserService userService,
             IRatingService ratingService,
             IMapper mapper)
@@ -52,7 +52,7 @@ namespace MyBeers.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
 
         [HttpGet]
@@ -79,6 +79,17 @@ namespace MyBeers.Api.Controllers
             return Ok(ratingList.OrderByDescending(x => x.CreatedTime));
         }
 
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateRatingAsync(UpdateRatingCommand updateRatingCommand, [FromRoute]string id)
+        {
+            var result = await _ratingService.UpdateRatingAsync(id, updateRatingCommand.Rating, updateRatingCommand.Description);
+            if (result.IsAcknowledged)
+            {
+                return Ok();
+            }
+            return BadRequest("Update failed");
+        }
         
 
     }

@@ -8,5 +8,6 @@ namespace MyBeers.Api.Services
     {
         Task<List<BeerData>> SearchSystemetAsync(string searchString);
         Task<BeerData> SearchSingleBeer(int id);
+        Task<List<BeerData>> GetNews();
     }
 }

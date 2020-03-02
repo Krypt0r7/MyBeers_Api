@@ -43,12 +43,17 @@ namespace MyBeers.Api.Services
 
         public async Task<List<Rating>> GetRatingsByUserId(string userId) => await _rating.Find(f => f.UserId == userId).ToListAsync();
         
-        public async Task<UpdateResult> UpdateRatingAsync(string id, int rating)
+        public async Task<UpdateResult> UpdateRatingAsync(string id, int rating, string description)
         {
+
             var filter = Builders<Rating>.Filter.Eq(f => f.Id, id);
+
+            var oldRating = await _rating.Find(filter).FirstOrDefaultAsync();
+
             var update = Builders<Rating>.Update
-                .Set(s => s.OverallRating, rating);
-            var result = await _rating.UpdateOneAsync(filter, update);
+                .Set(s => s.OverallRating, rating)
+                .Set(s => s.Description, description);
+            var result = await _rating.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = false });
             return result;
         }
     }

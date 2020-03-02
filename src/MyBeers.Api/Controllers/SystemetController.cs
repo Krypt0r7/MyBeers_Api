@@ -28,5 +28,11 @@ namespace MyBeers.Api.Controllers
         {
             return Ok(await _systemetService.SearchSingleBeer(id));
         }
+        [HttpGet("news")]
+        public async Task<IActionResult> NewsAsync()
+        {
+            var beers = await _systemetService.GetNews();
+            return Ok(beers);
+        }
     }
 }

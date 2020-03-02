@@ -9,7 +9,7 @@ namespace MyBeers.Api.Services
     public interface IRatingService
     {
         Task CreateRatingAsync(CreateRatingCommand ratingDto);
-        Task<UpdateResult> UpdateRatingAsync(string id, int rating);
+        Task<UpdateResult> UpdateRatingAsync(string id, int rating, string description);
         Task<Rating> GetRatingAsync(string id);
         Task<List<Rating>> GetRatingsByUserId(string userId);
         Task<List<Rating>> GetRatingsAsync(List<string> beerIds);
