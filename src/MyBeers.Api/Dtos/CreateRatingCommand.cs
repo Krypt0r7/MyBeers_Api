@@ -10,7 +10,7 @@ namespace MyBeers.Api.Dtos
     {
         public int OverallRating { get; set; }
         public string Description { get; set; }
-        public User User { get; set; }
+        public string UserId { get; set; }
         public Beer Beer { get; set; }
     }
 }

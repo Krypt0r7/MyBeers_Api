@@ -29,7 +29,8 @@ namespace MyBeers.Api.Services
                 BeerId = ratingDto.Beer.Id,
                 CreatedTime = DateTime.UtcNow,
                 OverallRating = ratingDto.OverallRating,
-                UserId = ratingDto.User.Id
+                Description = ratingDto.Description,
+                UserId = ratingDto.UserId
             };
 
             await _rating.InsertOneAsync(rating);

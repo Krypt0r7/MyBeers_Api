@@ -81,7 +81,7 @@ namespace MyBeers.Api.Controllers
             return Ok(_mapper.Map<UserDto>(user));
         }
 
-        [HttpPut("add-beer")]
+        [HttpPost("add-beer")]
         public async Task<IActionResult> AddBeerToUser(int productNumber)
         {
             try
@@ -97,7 +97,7 @@ namespace MyBeers.Api.Controllers
             }
         }
 
-        [HttpPut("remove-beer")]
+        [HttpPost("remove-beer")]
         public async Task<IActionResult> RemoveBeerFromUser(string beerId)
         {
             

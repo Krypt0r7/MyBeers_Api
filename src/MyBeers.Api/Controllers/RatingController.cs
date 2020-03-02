@@ -35,6 +35,7 @@ namespace MyBeers.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRating(CreateRatingDto ratingDto)
         {
+            var userId = HttpContext.User.Identity.Name;
             try
             {
                 var createRatingCommand = new CreateRatingCommand
@@ -42,11 +43,22 @@ namespace MyBeers.Api.Controllers
                     Beer = await _beerService.GetBeerByIdAsync(ratingDto.BeerId),
                     OverallRating = ratingDto.Rating,
                     Description = ratingDto.Description,
-                    User = await _userService.GetByIdAsync(HttpContext.User.Identity.Name)
+                    UserId = userId
                 };
-
                 await _ratingService.CreateRatingAsync(createRatingCommand);
-                return Ok();
+
+                var ratings = await _ratingService.GetRatingsByUserId(userId);
+                var rating = ratings.FirstOrDefault(x => x.BeerId == ratingDto.BeerId);
+                var ratingNewDto = new RatingAndUsersQueryDto
+                {
+                    Description = rating.Description,
+                    OverallRating = rating.OverallRating,
+                    CreatedTime = rating.CreatedTime,
+                    Id = rating.Id,
+                };
+                ratingNewDto.User = _mapper.Map<UserDto>(await _userService.GetByIdAsync(rating.UserId));
+
+                return Ok(ratingNewDto);
             }
             catch (Exception ex)
             {
@@ -80,17 +92,27 @@ namespace MyBeers.Api.Controllers
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPost("{id}")]
         public async Task<IActionResult> UpdateRatingAsync(UpdateRatingCommand updateRatingCommand, [FromRoute]string id)
         {
             var result = await _ratingService.UpdateRatingAsync(id, updateRatingCommand.Rating, updateRatingCommand.Description);
             if (result.IsAcknowledged)
             {
-                return Ok();
+                var rating = await _ratingService.GetRatingAsync(id);
+                var ratingDto = new RatingAndUsersQueryDto
+                {
+                    Description = rating.Description,
+                    OverallRating = rating.OverallRating,
+                    CreatedTime = rating.CreatedTime,
+                    Id = rating.Id,
+                    User = _mapper.Map<UserDto>(await _userService.GetByIdAsync(rating.UserId))
+                };
+                return Ok(ratingDto);
             }
             return BadRequest("Update failed");
         }
         
+
 
     }
 }
