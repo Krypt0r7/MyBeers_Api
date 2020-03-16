@@ -66,7 +66,7 @@ namespace MyBeers.Api.Controllers
             {
                 return Ok("User was deleted");
             }
-            return BadRequest();r
+            return BadRequest();
         }
 
         [HttpGet("{id}")]
