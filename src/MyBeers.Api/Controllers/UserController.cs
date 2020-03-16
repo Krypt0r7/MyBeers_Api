@@ -32,7 +32,7 @@ namespace MyBeers.Api.Controllers
             try
             {
                 await _userService.CreateAsync(userRegisterDto);
-                return Ok();
+                return Ok("User created");
 
             }
             catch (UserException ex)
@@ -56,6 +56,17 @@ namespace MyBeers.Api.Controllers
                 return BadRequest(ex.Message);
             }
             
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveUser(string id)
+        {
+            var result = await _userService.RemoveUser(id);
+            if (result.IsAcknowledged)
+            {
+                return Ok("User was deleted");
+            }
+            return BadRequest();r
         }
 
         [HttpGet("{id}")]

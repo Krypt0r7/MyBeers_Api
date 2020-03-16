@@ -7,7 +7,12 @@ namespace MyBeers.Api.Dtos
 {
     public class UpdateRatingCommand
     {
-        public int Rating { get; set; }
+        public double OverallRating { get; set; }
+        public int Taste { get; set; }
+        public int AfterTaste { get; set; }
+        public int Chugability { get; set; }
+        public int Value { get; set; }
+        public int FirstImpression { get; set; }
         public string Description { get; set; }
     }
 }

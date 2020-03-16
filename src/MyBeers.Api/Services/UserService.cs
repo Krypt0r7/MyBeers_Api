@@ -41,17 +41,12 @@ namespace MyBeers.Api.Services
 
         public async Task<UserDto> AuthenticateAsync(UserAuthenticateDto authenticateDto)
         {
-            if (string.IsNullOrEmpty(authenticateDto.Username) || string.IsNullOrEmpty(authenticateDto.Password))
-                throw new UserException("taken");
-
             var user = await _user.Find(c => c.Username == authenticateDto.Username).FirstOrDefaultAsync();
-            if (user == null)
-                throw new UserException("not found");
+
+            if (user == null || !VerifyPasswordHash(authenticateDto.Password, user.PasswordHash, user.PasswordSalt))
+                throw new UserException("Password or username incorrect");
 
             var userDto = _mapper.Map<UserDto>(user);
-
-            if (!VerifyPasswordHash(authenticateDto.Password, user.PasswordHash, user.PasswordSalt))
-                throw new UserException("password");
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -79,7 +74,7 @@ namespace MyBeers.Api.Services
                 throw new UserException("Password is required");
 
             if (await _user.Find(x => x.Username == user.Username).FirstOrDefaultAsync() != null)
-                throw new UserException("Email \"" + user.Username + "\" already exists");
+                throw new UserException("Username \"" + user.Username + "\" already exists");
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
@@ -168,6 +163,12 @@ namespace MyBeers.Api.Services
             var update = Builders<User>.Update.Set(x => x.BeerIds, beerList);
             var updateResult = await _user.UpdateOneAsync(filter, update);
             return updateResult;
+        }
+
+        public async Task<DeleteResult> RemoveUser(string id)
+        {
+            var result = await _user.DeleteOneAsync(f => f.Id == id);
+            return result;
         }
     }
 }

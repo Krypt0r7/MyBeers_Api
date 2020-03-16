@@ -16,5 +16,6 @@ namespace MyBeers.Api.Services
         Task<User> CreateAsync(UserRegisterDto userDto);
         Task<UpdateResult> AddBeerToUserAsync(string id, int productId);
         Task<UpdateResult> RemoveBeerFromUserAsync(string id, string beerId);
+        Task<DeleteResult> RemoveUser(string id);
     }
 }

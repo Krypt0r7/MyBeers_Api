@@ -41,7 +41,12 @@ namespace MyBeers.Api.Controllers
                 var createRatingCommand = new CreateRatingCommand
                 {
                     Beer = await _beerService.GetBeerByIdAsync(ratingDto.BeerId),
-                    OverallRating = ratingDto.Rating,
+                    OverallRating = ratingDto.OverallRating,
+                    AfterTaste = ratingDto.AfterTaste,
+                    Chugability = ratingDto.Chugability,
+                    FirstImpression = ratingDto.FirstImpression,
+                    Taste = ratingDto.Taste,
+                    Value = ratingDto.Value,
                     Description = ratingDto.Description,
                     UserId = userId
                 };
@@ -53,6 +58,10 @@ namespace MyBeers.Api.Controllers
                 {
                     Description = rating.Description,
                     OverallRating = rating.OverallRating,
+                    AfterTaste = rating.AfterTaste,
+                    Chugability = rating.Chugability,
+                    FirstImpression = rating.FirstImpression,
+                    Taste = rating.Taste,
                     CreatedTime = rating.CreatedTime,
                     Id = rating.Id,
                 };
@@ -83,6 +92,11 @@ namespace MyBeers.Api.Controllers
                     Beer = _mapper.Map<BeerDto>(beers.First(x => x.Id == rating.BeerId)),
                     CreatedTime = rating.CreatedTime,
                     OverallRating = rating.OverallRating,
+                    AfterTaste = rating.AfterTaste,
+                    Chugability = rating.Chugability,
+                    FirstImpression = rating.FirstImpression,
+                    Taste = rating.Taste,
+                    Value = rating.Value,
                     Description = rating.Description,
                     User = _mapper.Map<UserDto>(users.First(x => x.Id == rating.UserId))
                 });
@@ -95,7 +109,7 @@ namespace MyBeers.Api.Controllers
         [HttpPost("{id}")]
         public async Task<IActionResult> UpdateRatingAsync(UpdateRatingCommand updateRatingCommand, [FromRoute]string id)
         {
-            var result = await _ratingService.UpdateRatingAsync(id, updateRatingCommand.Rating, updateRatingCommand.Description);
+            var result = await _ratingService.UpdateRatingAsync(id, updateRatingCommand);
             if (result.IsAcknowledged)
             {
                 var rating = await _ratingService.GetRatingAsync(id);
@@ -103,6 +117,11 @@ namespace MyBeers.Api.Controllers
                 {
                     Description = rating.Description,
                     OverallRating = rating.OverallRating,
+                    AfterTaste = rating.AfterTaste,
+                    Chugability = rating.Chugability,
+                    FirstImpression = rating.FirstImpression,
+                    Taste = rating.Taste,
+                    Value = rating.Value,
                     CreatedTime = rating.CreatedTime,
                     Id = rating.Id,
                     User = _mapper.Map<UserDto>(await _userService.GetByIdAsync(rating.UserId))

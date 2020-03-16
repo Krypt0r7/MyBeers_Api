@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -62,6 +63,8 @@ namespace MyBeers.Api.Services
 
         public async Task<List<BeerData>> SearchSystemetAsync(string searchString)
         {
+            var timer = new Stopwatch();
+            timer.Start();
             var response = await HttpClient.GetAsync($"product/v1/product/search?SearchQuery={searchString}&Category=Öl&SubCategory=Öl");
 
             if (response.IsSuccessStatusCode)
@@ -70,13 +73,18 @@ namespace MyBeers.Api.Services
                 var objects = JsonConvert.DeserializeObject<BeerListModel>(data);
                 var mappedBeers = _mapper.Map<List<BeerData>>(objects.Hits);
 
-                foreach (var item in mappedBeers)
-                {
-                    item.ImageUrl = BuildImageUrls.BuildUrl((int)item.ProductId);
-                }
+                //foreach (var item in mappedBeers)
+                //{
+                //    item.ImageUrl = BuildImageUrls.BuildUrl((int)item.ProductId);
+                //}
+
+                timer.Stop();
+                var elapsed = timer.ElapsedMilliseconds;
                 
-                return mappedBeers;
+                    return mappedBeers;
             }
+
+
 
             return null;
         }

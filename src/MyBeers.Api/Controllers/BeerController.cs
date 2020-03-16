@@ -43,7 +43,7 @@ namespace MyBeers.Api.Controllers
 
             if (user.BeerIds == null)
             {
-                return BadRequest("No beers added");
+                return Ok(new List<BeerQueryDto>());
             }
 
             var beers = await _beerService.GetUsersBeerAsync(user.BeerIds);
@@ -100,11 +100,16 @@ namespace MyBeers.Api.Controllers
             
             foreach (var rating in ratings)
             {
-                beerDto.Ratings.Add(new RatingAndUsersQueryDto
+                beerDto.Ratings.Insert(0, new RatingAndUsersQueryDto
                 {
                     Id = rating.Id,
                     CreatedTime = rating.CreatedTime,
                     OverallRating = rating.OverallRating,
+                    AfterTaste = rating.AfterTaste,
+                    Chugability = rating.Chugability,
+                    FirstImpression = rating.FirstImpression,
+                    Taste = rating.Taste,
+                    Value = rating.Value,
                     Description = rating.Description,
                     User = _mapper.Map<UserDto>(users.Where(x => x.Id == rating.UserId).First())
                 });
@@ -141,6 +146,11 @@ namespace MyBeers.Api.Controllers
                         Id = rating.Id,
                         CreatedTime = rating.CreatedTime,
                         OverallRating = rating.OverallRating,
+                        AfterTaste = rating.AfterTaste,
+                        Chugability = rating.Chugability,
+                        FirstImpression = rating.FirstImpression,
+                        Taste = rating.Taste,
+                        Value = rating.Value,
                         Description = rating.Description,
                         User = _mapper.Map<UserDto>(users.Where(x => x.Id == rating.UserId).First())
                     });
