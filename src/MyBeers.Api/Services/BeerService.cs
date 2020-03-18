@@ -56,7 +56,7 @@ namespace MyBeers.Api.Services
 
         public async Task<List<Beer>> GetUsersBeerAsync(List<string> beerIds)
         {
-            return await _beer.Find(f => beerIds.Contains(f.Id)).ToListAsync();
+            return await _beer.Find(f => beerIds.Contains(f.Id)).SortByDescending(s => s.Added).ToListAsync();
         }
 
         public async Task<Beer> GetBeerByIdAsync(string id)
