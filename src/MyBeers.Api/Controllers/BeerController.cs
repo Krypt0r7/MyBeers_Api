@@ -81,6 +81,13 @@ namespace MyBeers.Api.Controllers
             return Ok(beerDto);
         }
 
+        [HttpGet("best")]
+        public async Task<IActionResult> BestRatedBeer()
+        {
+            var beers = await _beerService.GetTopRatedBeerAsync();
+            return Ok(beers);
+        }
+
         [HttpGet("{id}/ratings")]
         public async Task<IActionResult> BeersRatingsAsync (string id)
         {

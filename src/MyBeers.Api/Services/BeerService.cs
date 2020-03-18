@@ -17,15 +17,18 @@ namespace MyBeers.Api.Services
     public class BeerService : IBeerService
     {
         private readonly IMongoCollection<Beer> _beer;
+        private readonly IRatingService _ratingService;
         private readonly ISystemetService _systemetService;
         public BeerService(
             IDBSettings mongoSettings,
-            ISystemetService systemetService)
+            ISystemetService systemetService,
+            IRatingService ratingService)
         {
             var client = new MongoClient(mongoSettings.ConnectionString);
             var database = client.GetDatabase(mongoSettings.DatabaseName);
             _beer = database.GetCollection<Beer>(mongoSettings.BeerCollection);
             _systemetService = systemetService;
+            _ratingService = ratingService;
         }
 
 
@@ -68,6 +71,44 @@ namespace MyBeers.Api.Services
         }
 
         public async Task<List<Beer>> GetAllBeersAsync() =>  await _beer.Find(f => true).ToListAsync();
-     
+
+        public async Task<List<BeerAverageRatingDto>> GetTopRatedBeerAsync()
+        {
+            var ratings = await _ratingService.GetRatingsAsync();
+            var groupedRatings = ratings.GroupBy(rating => rating.BeerId).ToList();
+            var collection = new Dictionary<string, double>();
+            foreach (var beer in groupedRatings)
+            {
+                double average = 0;
+                foreach (var rating in beer)
+                {
+                    average += rating.OverallRating;
+                }
+                average = average / beer.Count();
+                collection.Add(beer.Key, average);
+            }
+
+            var orderedCollection = collection.OrderByDescending(o => o.Value).Take(5);
+            var ids = orderedCollection.Select(x => x.Key).ToList();
+
+            var beers = await _beer.Find(f => ids.Contains(f.Id)).ToListAsync();
+
+            var listOfBeer = new List<BeerAverageRatingDto>();
+
+            foreach (var keyValue in orderedCollection)
+            {
+                var theBeer = beers.FirstOrDefault(x => x.Id == keyValue.Key); 
+                listOfBeer.Add(new BeerAverageRatingDto
+                {
+                    Added = theBeer.Added,
+                    Id = theBeer.Id,
+                    AverageRating = keyValue.Value,
+                    BeerData = theBeer.BeerData,
+                    YPK = theBeer.YPK
+                });
+            }
+
+            return listOfBeer;
+        }
     }
 }
