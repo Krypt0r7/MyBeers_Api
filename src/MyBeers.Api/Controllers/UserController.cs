@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -55,7 +54,7 @@ namespace MyBeers.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
 
         [HttpDelete("{id}")]
@@ -111,13 +110,39 @@ namespace MyBeers.Api.Controllers
         [HttpPost("remove-beer")]
         public async Task<IActionResult> RemoveBeerFromUser(string beerId)
         {
-            
+
             var result = await _userService.RemoveBeerFromUserAsync(HttpContext.User.Identity.Name, beerId);
-            if(result.IsAcknowledged)
+            if (result.IsAcknowledged)
                 return Ok();
             return BadRequest("Unable to update beerlist");
         }
 
+
+        [HttpPost("{id}/password")]
+        public async Task<IActionResult> UpdateUserPassword(string id, [FromBody]UpdatePasswordCommandDto updateDto)
+        {
+            var result = await _userService.UpdateUsersPasswordAsync(id, updateDto.Password);
+            if (result.IsAcknowledged)
+                return Ok("Password updated");
+            return BadRequest("Error updating password");
+        }
+
+        [HttpPost("{id}/update")]
+        public async Task<IActionResult> UpdateUserData(string id, [FromBody]UpdateUserCommandDto updateUserCommandDto)
+        {
+            var result = await _userService.UpdateUserDataAsync(id, updateUserCommandDto);
+            if (result.IsAcknowledged)
+                return Ok(await _userService.GetByIdAsync(id));
+            return BadRequest("Error updating user data");
+        }
+
+        [HttpPost("{id}/uploadImage")]
+        public async Task<IActionResult> UploadAvatar([FromBody]AvatarUploadDto file, string id)
+        {
+            //var base64Data = Regex.Match(data, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
+            var bytes = Convert.FromBase64String(file.File);
+            return Ok();
+        }
 
     }
 }

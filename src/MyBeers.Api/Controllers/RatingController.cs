@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using MyBeers.Api.Dtos;
 using MyBeers.Api.Services;
 
@@ -131,7 +132,14 @@ namespace MyBeers.Api.Controllers
             return BadRequest("Update failed");
         }
         
-
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRating(string id)
+        {
+            var result = await _ratingService.DeleteRatingAsync(id);
+            if (result.IsAcknowledged)
+                return Ok("Rating removed");
+            return BadRequest("Deletion faulty");
+        }
 
     }
 }

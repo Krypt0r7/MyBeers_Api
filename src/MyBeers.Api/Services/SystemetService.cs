@@ -23,11 +23,13 @@ namespace MyBeers.Api.Services
             HttpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "ce26456ac64b43a38dbc40dc6925177c");
         }
 
-        public async Task<List<BeerData>> GetNews()
+        public async Task<List<BeerData>> GetNews(string region)
         {
+            string regionText = (region != null) ? "&originLevel1=" + region : "";
             var today = DateTime.UtcNow.Date;
             var twoWeeksFromNow = DateTime.UtcNow.AddDays(14).Date;
-            var response = await HttpClient.GetAsync($"product/v1/product/search?Country=Sverige&SubCategory=Öl&SellStartDateFrom={today}&SellStartDateTo={twoWeeksFromNow}");
+            string url = $"product/v1/product/search?Country=Sverige&SubCategory=Öl&SellStartDateFrom={today}&SellStartDateTo={twoWeeksFromNow}{regionText}";
+            var response = await HttpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
@@ -35,10 +37,6 @@ namespace MyBeers.Api.Services
 
                 var mappedBeer = _mapper.Map<List<BeerData>>(objects.Hits);
 
-                foreach (var beer in mappedBeer)
-                {
-                    beer.ImageUrl = BuildImageUrls.BuildUrl((int)beer.ProductId);
-                }
                 return mappedBeer;
             }
             return new List<BeerData>();

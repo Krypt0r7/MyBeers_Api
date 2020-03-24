@@ -170,5 +170,50 @@ namespace MyBeers.Api.Services
             var result = await _user.DeleteOneAsync(f => f.Id == id);
             return result;
         }
+
+        public async Task<UpdateResult> UpdateUsersPasswordAsync(string id, string password)
+        {
+            var user = await _user.Find(x => x.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return null;
+
+            byte[] passwordHash, passwordSalt;
+            CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            user.Id = null;
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            var filter = Builders<User>.Filter.Eq(x => x.Id, id);
+            var update = Builders<User>.Update
+                .Set(x => x.PasswordHash, passwordHash)
+                .Set(x => x.PasswordSalt, passwordSalt);
+
+            var result = await _user.UpdateOneAsync(filter, update);
+
+            return result;
+        }
+
+        public async Task<UpdateResult> UpdateUserDataAsync(string id, UpdateUserCommandDto updateUserCommandDto)
+        {
+            var user = await _user.Find(x => x.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return null;
+
+            var filter = Builders<User>.Filter.Eq(x => x.Id, id);
+            var update = Builders<User>.Update
+                .Set(x => x.AvatarUrl, updateUserCommandDto.AvatarUrl != null ? updateUserCommandDto.AvatarUrl : user.AvatarUrl)
+                .Set(x => x.Username, updateUserCommandDto.Username != null ? updateUserCommandDto.Username : user.Username)
+                .Set(x => x.Email, updateUserCommandDto.Email != null ? updateUserCommandDto.Email : user.Email);
+
+            var result = await _user.UpdateOneAsync(filter, update);
+
+            return result;
+        }
+
+
+        private async Task UpdateAvatar()
+        {
+
+        }
     }
 }

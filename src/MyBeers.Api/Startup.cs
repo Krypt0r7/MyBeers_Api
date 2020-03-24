@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyBeers.Api.Services;
 using MyBeers.Api.Utils;
+using Microsoft.OpenApi.Models;
 
 namespace MyBeers.Api
 {
@@ -50,6 +51,10 @@ namespace MyBeers.Api
 
             services.AddHttpContextAccessor();
 
+            services.AddSwaggerGen(x =>
+            {
+                x.SwaggerDoc("v1", new OpenApiInfo {Title = "MyBeers API", Version = "v1" });
+            });
 
             //JWT secrets get
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -111,6 +116,14 @@ namespace MyBeers.Api
                 .AllowAnyMethod()
                 .AllowAnyHeader()
             );
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(x =>
+            {
+                x.SwaggerEndpoint("/swagger/v1/swagger.json", "MyBeers API");
+            });
+
 
             app.UseRouting();
 

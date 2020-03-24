@@ -14,5 +14,6 @@ namespace MyBeers.Api.Services
         Task<List<Rating>> GetRatingsByUserId(string userId);
         Task<List<Rating>> GetRatingsAsync(List<string> beerIds);
         Task<List<Rating>> GetRatingsAsync();
+        Task<DeleteResult> DeleteRatingAsync(string id);
     }
 }

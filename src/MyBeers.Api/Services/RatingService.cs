@@ -71,5 +71,11 @@ namespace MyBeers.Api.Services
             var result = await _rating.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = false });
             return result;
         }
+
+        public async Task<DeleteResult> DeleteRatingAsync(string id)
+        {
+            var result = await _rating.DeleteOneAsync(x => x.Id == id);
+            return result;
+        }
     }
 }
