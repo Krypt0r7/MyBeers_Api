@@ -8,7 +8,7 @@ namespace MyBeers.Api.Services
 {
     public interface IBeerService
     {
-        Task<Beer> SaveBeerProdNumberAsync(int productNumber);
+        Task<Beer> SaveBeerProdNumberAsync(int productId);
         Task<List<Beer>> GetUsersBeerAsync(List<string> beerIds);
         Task<Beer> GetBeerByIdAsync(string id);
         Task<List<BeerAverageRatingDto>> GetTopRatedBeerAsync();

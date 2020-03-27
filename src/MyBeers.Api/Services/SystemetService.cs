@@ -44,14 +44,13 @@ namespace MyBeers.Api.Services
 
         public async Task<BeerData> SearchSingleBeer(int id)
         {
-            var response = await HttpClient.GetAsync($"product/v1/product/search?SearchQuery={id}");
+            var response = await HttpClient.GetAsync($"product/v1/product/{id}");
 
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var objects = JsonConvert.DeserializeObject<BeerListModel>(data);
-
-                var mappedBeer = _mapper.Map<BeerData>(objects.Hits.FirstOrDefault());
+                var systemetData = JsonConvert.DeserializeObject<SystemetBeerIn>(data);
+                var mappedBeer = _mapper.Map<BeerData>(systemetData);
                 mappedBeer.ImageUrl = BuildImageUrls.BuildUrl((int)mappedBeer.ProductId);
                 return mappedBeer;
             }

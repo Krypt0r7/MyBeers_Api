@@ -201,7 +201,6 @@ namespace MyBeers.Api.Services
 
             var filter = Builders<User>.Filter.Eq(x => x.Id, id);
             var update = Builders<User>.Update
-                .Set(x => x.AvatarUrl, updateUserCommandDto.AvatarUrl != null ? updateUserCommandDto.AvatarUrl : user.AvatarUrl)
                 .Set(x => x.Username, updateUserCommandDto.Username != null ? updateUserCommandDto.Username : user.Username)
                 .Set(x => x.Email, updateUserCommandDto.Email != null ? updateUserCommandDto.Email : user.Email);
 
@@ -211,9 +210,18 @@ namespace MyBeers.Api.Services
         }
 
 
-        private async Task UpdateAvatar()
+        public async Task<UpdateResult> UpdateAvatarAsync(string id, AvatarUploadDto avatar)
         {
+            var user = await _user.Find(x => x.Id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return null;
 
+            var filter = Builders<User>.Filter.Eq(x => x.Id, id);
+            var update = Builders<User>.Update
+                .Set(s => s.AvatarUrl, avatar.File);
+
+            var result = await _user.UpdateOneAsync(filter, update);
+            return result;
         }
     }
 }

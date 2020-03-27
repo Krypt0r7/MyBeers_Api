@@ -103,7 +103,7 @@ namespace MyBeers.Api.Controllers
                 });
             }
 
-            return Ok(ratingList.OrderByDescending(x => x.CreatedTime));
+            return Ok(ratingList);
         }
 
 

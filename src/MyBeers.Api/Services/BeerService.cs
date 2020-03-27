@@ -32,14 +32,14 @@ namespace MyBeers.Api.Services
         }
 
 
-        public async Task<Beer> SaveBeerProdNumberAsync(int productNumber)
+        public async Task<Beer> SaveBeerProdNumberAsync(int productId)
         {
-            var beerExisting = await _beer.Find(x => x.BeerData.ProductNumber == productNumber).FirstOrDefaultAsync();
+            var beerExisting = await _beer.Find(x => x.BeerData.ProductId == productId).FirstOrDefaultAsync();
 
             if (beerExisting != null)
                 return beerExisting;
 
-            var mapppedBeer = await _systemetService.SearchSingleBeer(productNumber);
+            var mapppedBeer = await _systemetService.SearchSingleBeer(productId);
             if (mapppedBeer == null)
                 return null;
 
@@ -54,7 +54,7 @@ namespace MyBeers.Api.Services
 
             await _beer.InsertOneAsync(beer);
 
-            return await _beer.Find(x => x.BeerData.ProductNumber == productNumber).FirstOrDefaultAsync();
+            return await _beer.Find(x => x.BeerData.ProductId == productId).FirstOrDefaultAsync();
         }
 
         public async Task<List<Beer>> GetUsersBeerAsync(List<string> beerIds)

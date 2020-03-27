@@ -92,11 +92,11 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpPost("add-beer")]
-        public async Task<IActionResult> AddBeerToUser(int productNumber)
+        public async Task<IActionResult> AddBeerToUser(int productId)
         {
             try
             {
-                var result = await _userService.AddBeerToUserAsync(HttpContext.User.Identity.Name, productNumber);
+                var result = await _userService.AddBeerToUserAsync(HttpContext.User.Identity.Name, productId);
                 if (result.IsAcknowledged)
                     return Ok();
                 return BadRequest("Unable to update beerlist");
@@ -124,6 +124,8 @@ namespace MyBeers.Api.Controllers
             var result = await _userService.UpdateUsersPasswordAsync(id, updateDto.Password);
             if (result.IsAcknowledged)
                 return Ok("Password updated");
+            if (result == null)
+                return BadRequest("User not found");
             return BadRequest("Error updating password");
         }
 
@@ -132,16 +134,25 @@ namespace MyBeers.Api.Controllers
         {
             var result = await _userService.UpdateUserDataAsync(id, updateUserCommandDto);
             if (result.IsAcknowledged)
-                return Ok(await _userService.GetByIdAsync(id));
+                return Ok(_mapper.Map<UserDto>(await _userService.GetByIdAsync(id)));
+            if (result == null)
+                return BadRequest("User not found");
+
             return BadRequest("Error updating user data");
         }
 
         [HttpPost("{id}/uploadImage")]
         public async Task<IActionResult> UploadAvatar([FromBody]AvatarUploadDto file, string id)
         {
-            //var base64Data = Regex.Match(data, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
-            var bytes = Convert.FromBase64String(file.File);
-            return Ok();
+            var result = await _userService.UpdateAvatarAsync(id, file);
+
+            if(result.IsAcknowledged)
+                return Ok(_mapper.Map<UserDto>(await _userService.GetByIdAsync(id)));
+            
+            if(result == null)
+                return BadRequest("User not found");
+
+            return BadRequest("Something went wrong");
         }
 
     }

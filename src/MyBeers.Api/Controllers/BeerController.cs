@@ -171,9 +171,9 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNewBeer(int productNumber)
+        public async Task<IActionResult> CreateNewBeer(int productId)
         {
-            var beer = await _beerService.SaveBeerProdNumberAsync(productNumber);
+            var beer = await _beerService.SaveBeerProdNumberAsync(productId);
             if (beer == null)
                 return BadRequest("ProductId yielded no result");
 
