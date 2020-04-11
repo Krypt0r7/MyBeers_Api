@@ -84,7 +84,15 @@ namespace MyBeers.Api.Controllers
         [HttpGet("best")]
         public async Task<IActionResult> BestRatedBeer()
         {
-            var beers = await _beerService.GetTopRatedBeerAsync();
+            var beers = await _beerService.GetTopOrBottomRatedBeerAsync();
+            return Ok(beers);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("worst")]
+        public async Task<IActionResult> WorstRatedBeer()
+        {
+            var beers = await _beerService.GetTopOrBottomRatedBeerAsync(false);
             return Ok(beers);
         }
 

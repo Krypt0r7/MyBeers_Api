@@ -72,7 +72,7 @@ namespace MyBeers.Api.Services
 
         public async Task<List<Beer>> GetAllBeersAsync() =>  await _beer.Find(f => true).ToListAsync();
 
-        public async Task<List<BeerAverageRatingDto>> GetTopRatedBeerAsync()
+        public async Task<List<BeerAverageRatingDto>> GetTopOrBottomRatedBeerAsync(bool top = true)
         {
             var ratings = await _ratingService.GetRatingsAsync();
             var groupedRatings = ratings.GroupBy(rating => rating.BeerId).ToList();
@@ -88,7 +88,8 @@ namespace MyBeers.Api.Services
                 collection.Add(beer.Key, average);
             }
 
-            var orderedCollection = collection.OrderByDescending(o => o.Value).Take(5);
+            var orderedCollection = top ? collection.OrderByDescending(o => o.Value).Take(5) : collection.OrderBy(o => o.Value).Take(5);
+
             var ids = orderedCollection.Select(x => x.Key).ToList();
 
             var beers = await _beer.Find(f => ids.Contains(f.Id)).ToListAsync();

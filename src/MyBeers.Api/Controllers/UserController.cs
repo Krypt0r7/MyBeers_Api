@@ -91,6 +91,15 @@ namespace MyBeers.Api.Controllers
             return Ok(_mapper.Map<UserDto>(user));
         }
 
+        [HttpGet("by-name")]
+        public async Task<IActionResult> ByUserName(string userName)
+        {
+            var userDto = await _userService.GetByUserName(userName);
+            if (userDto != null)
+                return Ok(userDto);
+            return BadRequest("Username not found");
+        }
+
         [HttpPost("add-beer")]
         public async Task<IActionResult> AddBeerToUser(int productId)
         {
