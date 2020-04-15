@@ -38,7 +38,8 @@ namespace MyBeers.Api.Controllers
             var userId = HttpContext.User.Identity.Name;
 
             var user = await _userService.GetByIdAsync(userId);
-
+            if (user == null)
+                return BadRequest("No user found");
             if (user.BeerIds == null)
             {
                 return Ok(new List<BeerQueryDto>());
@@ -81,33 +82,13 @@ namespace MyBeers.Api.Controllers
 
 
         [AllowAnonymous]
-        [HttpGet("best")]
-        public async Task<IActionResult> BestRatedBeer(string userId)
+        [HttpGet("ranking")]
+        public async Task<IActionResult> BestRatedBeer()
         {
-            List<BeerAverageRatingDto> listOfBeer;
-            if (userId != null)
-            {
-                listOfBeer = await _beerService.GetTopOrBottomRatedBeerAsync(userId, true);
-                if (listOfBeer == null)
-                    return BadRequest("User not found");
-            }
-            listOfBeer = await _beerService.GetTopOrBottomRatedBeerAsync(null, true);
-            return Ok(listOfBeer);
-        }
-
-        [AllowAnonymous]
-        [HttpGet("worst")]
-        public async Task<IActionResult> WorstRatedBeer(string userId)
-        {
-            List<BeerAverageRatingDto> listOfBeer;
-            if (userId != null)
-            {
-                listOfBeer = await _beerService.GetTopOrBottomRatedBeerAsync(userId, false);
-                if (listOfBeer == null)
-                    return BadRequest("User not found");
-            }
-            listOfBeer = await _beerService.GetTopOrBottomRatedBeerAsync(null, false);
-            return Ok(listOfBeer);
+            var listOfBest = await _beerService.GetTopOrBottomRatedBeerAsync(null, true);
+              
+            var listOfWorst = await _beerService.GetTopOrBottomRatedBeerAsync(null, false);
+            return Ok(new { listOfBest, listOfWorst });
         }
 
         [HttpGet("{id}/ratings")]

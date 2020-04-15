@@ -81,7 +81,7 @@ namespace MyBeers.Api.Controllers
         {
             var user = await _userService.GetByIdAsync(id);
             if (user == null)
-                return BadRequest("not found");
+                return BadRequest("User not found");
             return Ok(_mapper.Map<UserDto>(user));
         }
 
@@ -117,7 +117,7 @@ namespace MyBeers.Api.Controllers
                 Username = user.Username,
                 Ratings = new List<RatingBeerDto>(),
                 BestRatedBeer = await _beerService.GetTopOrBottomRatedBeerAsync(user.Id, true),
-                WorstRatedBeer = await _beerService.GetTopOrBottomRatedBeerAsync(null, false)
+                WorstRatedBeer = await _beerService.GetTopOrBottomRatedBeerAsync(user.Id, false)
             };
 
             foreach (var rating in ratings)
