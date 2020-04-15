@@ -224,12 +224,14 @@ namespace MyBeers.Api.Services
             return result;
         }
 
-        public async Task<UserDto> GetByUserName(string username)
+        public async Task<User> GetByUserName(string username)
         {
             var user = await _user.Find(f => f.Username == username).FirstOrDefaultAsync();
+
             if (user == null)
                 return null;
-            return _mapper.Map<UserDto>(user);
+
+            return user;
         }
     }
 }

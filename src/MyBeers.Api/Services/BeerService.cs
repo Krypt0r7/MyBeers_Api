@@ -72,9 +72,9 @@ namespace MyBeers.Api.Services
 
         public async Task<List<Beer>> GetAllBeersAsync() =>  await _beer.Find(f => true).ToListAsync();
 
-        public async Task<List<BeerAverageRatingDto>> GetTopOrBottomRatedBeerAsync(bool top = true)
+        public async Task<List<BeerAverageRatingDto>> GetTopOrBottomRatedBeerAsync(string userId = null, bool top = true)
         {
-            var ratings = await _ratingService.GetRatingsAsync();
+            var ratings = userId == null ? await _ratingService.GetRatingsAsync() : await _ratingService.GetRatingsByUserId(userId);
             var groupedRatings = ratings.GroupBy(rating => rating.BeerId).ToList();
             var collection = new Dictionary<string, double>();
             foreach (var beer in groupedRatings)
@@ -84,7 +84,7 @@ namespace MyBeers.Api.Services
                 {
                     average += rating.OverallRating;
                 }
-                average = average / beer.Count();
+                average /= beer.Count();
                 collection.Add(beer.Key, average);
             }
 

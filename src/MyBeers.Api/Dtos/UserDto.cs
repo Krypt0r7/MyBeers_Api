@@ -13,6 +13,6 @@ namespace MyBeers.Api.Dtos
         public string Email { get; set; }
         public string AvatarUrl { get; set; }
         public string Token { get; set; }
-        public List<Beer> Beers { get; set; }
+        public List<BeerDto> Beers { get; set; }
     }
 }

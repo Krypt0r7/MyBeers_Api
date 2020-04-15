@@ -82,18 +82,32 @@ namespace MyBeers.Api.Controllers
 
         [AllowAnonymous]
         [HttpGet("best")]
-        public async Task<IActionResult> BestRatedBeer()
+        public async Task<IActionResult> BestRatedBeer(string userId)
         {
-            var beers = await _beerService.GetTopOrBottomRatedBeerAsync();
-            return Ok(beers);
+            List<BeerAverageRatingDto> listOfBeer;
+            if (userId != null)
+            {
+                listOfBeer = await _beerService.GetTopOrBottomRatedBeerAsync(userId, true);
+                if (listOfBeer == null)
+                    return BadRequest("User not found");
+            }
+            listOfBeer = await _beerService.GetTopOrBottomRatedBeerAsync(null, true);
+            return Ok(listOfBeer);
         }
 
         [AllowAnonymous]
         [HttpGet("worst")]
-        public async Task<IActionResult> WorstRatedBeer()
+        public async Task<IActionResult> WorstRatedBeer(string userId)
         {
-            var beers = await _beerService.GetTopOrBottomRatedBeerAsync(false);
-            return Ok(beers);
+            List<BeerAverageRatingDto> listOfBeer;
+            if (userId != null)
+            {
+                listOfBeer = await _beerService.GetTopOrBottomRatedBeerAsync(userId, false);
+                if (listOfBeer == null)
+                    return BadRequest("User not found");
+            }
+            listOfBeer = await _beerService.GetTopOrBottomRatedBeerAsync(null, false);
+            return Ok(listOfBeer);
         }
 
         [HttpGet("{id}/ratings")]

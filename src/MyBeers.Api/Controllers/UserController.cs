@@ -17,10 +17,18 @@ namespace MyBeers.Api.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IRatingService _ratingService;
+        private readonly IBeerService _beerService;
         private readonly IMapper _mapper;
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(
+            IUserService userService, 
+            IMapper mapper, 
+            IRatingService ratingService,
+            IBeerService beerService)
         {
             _userService = userService;
+            _ratingService = ratingService;
+            _beerService = beerService;
             _mapper = mapper;
         }
 
@@ -94,10 +102,42 @@ namespace MyBeers.Api.Controllers
         [HttpGet("by-name")]
         public async Task<IActionResult> ByUserName(string userName)
         {
-            var userDto = await _userService.GetByUserName(userName);
-            if (userDto != null)
-                return Ok(userDto);
-            return BadRequest("Username not found");
+            var user = await _userService.GetByUserName(userName);
+
+            if (user == null)
+                return BadRequest("Username not found");
+
+            var ratings = await _ratingService.GetRatingsByUserId(user.Id);
+
+            var userDto = new UserFullDataDto
+            {
+                Id = user.Id,
+                AvatarUrl = user.AvatarUrl,
+                Email = user.Email,
+                Username = user.Username,
+                Ratings = new List<RatingBeerDto>(),
+                BestRatedBeer = await _beerService.GetTopOrBottomRatedBeerAsync(user.Id, true),
+                WorstRatedBeer = await _beerService.GetTopOrBottomRatedBeerAsync(null, false)
+            };
+
+            foreach (var rating in ratings)
+            {
+                var ratingDto = new RatingBeerDto
+                {
+                    AfterTaste = rating.AfterTaste,
+                    Chugability = rating.Chugability,
+                    CreatedTime = rating.CreatedTime,
+                    Description = rating.Description,
+                    FirstImpression = rating.FirstImpression,
+                    OverallRating = rating.OverallRating,
+                    Taste = rating.Taste,
+                    Value = rating.Value,
+                    Beer = _mapper.Map<BeerDto>(await _beerService.GetBeerByIdAsync(rating.BeerId))
+                };
+                userDto.Ratings.Add(ratingDto);
+            };
+
+            return Ok(userDto);
         }
 
         [HttpPost("add-beer")]

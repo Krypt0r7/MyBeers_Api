@@ -11,7 +11,7 @@ namespace MyBeers.Api.Services
         Task<Beer> SaveBeerProdNumberAsync(int productId);
         Task<List<Beer>> GetUsersBeerAsync(List<string> beerIds);
         Task<Beer> GetBeerByIdAsync(string id);
-        Task<List<BeerAverageRatingDto>> GetTopOrBottomRatedBeerAsync(bool top = true);
+        Task<List<BeerAverageRatingDto>> GetTopOrBottomRatedBeerAsync(string userId = null, bool top = true);
         Task<List<Beer>> GetAllBeersAsync();
     }
 }
