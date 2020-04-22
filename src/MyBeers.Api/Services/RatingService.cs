@@ -49,7 +49,7 @@ namespace MyBeers.Api.Services
 
         public async Task<List<Rating>> GetRatingsAsync(List<string> beerIds) =>  await _rating.Find(f => beerIds.Contains(f.BeerId)).ToListAsync();
 
-        public async Task<List<Rating>> GetRatingsAsync() => await _rating.Find(f => true).SortByDescending(x => x.CreatedTime).Limit(25).ToListAsync();
+        public async Task<List<Rating>> GetRatingsAsync() => await _rating.Find(f => true).SortByDescending(x => x.CreatedTime).ToListAsync();
 
         public async Task<List<Rating>> GetRatingsByUserId(string userId) => await _rating.Find(f => f.UserId == userId).ToListAsync();
         

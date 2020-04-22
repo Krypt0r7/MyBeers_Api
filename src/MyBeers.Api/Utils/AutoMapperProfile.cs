@@ -18,8 +18,8 @@ namespace MyBeers.Api.Utils
             CreateMap<UserAuthenticateDto, User>();
             CreateMap<UserRegisterDto, User>();
 
-            CreateMap<SystemetDto, BeerData>().ForMember(f => f.ProductName, o => o.MapFrom(x => x.ProductNameThin + " " + x.ProductNameBold));
-            CreateMap<SystemetBeerIn, BeerData>().ForMember(f => f.ProductName, o => o.MapFrom(x => x.ProductNameThin + " " + x.ProductNameBold));
+            CreateMap<SystemetDto, Beer.BeerDataModel>().ForMember(f => f.ProductName, o => o.MapFrom(x => x.ProductNameThin + " " + x.ProductNameBold));
+            CreateMap<SystemetBeerIn, Beer.BeerDataModel>().ForMember(f => f.ProductName, o => o.MapFrom(x => x.ProductNameThin + " " + x.ProductNameBold));
 
             CreateMap<Beer, BeerDto>();
             CreateMap<Beer, BeerQueryDto>();

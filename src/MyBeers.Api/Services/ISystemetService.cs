@@ -6,8 +6,8 @@ namespace MyBeers.Api.Services
 {
     public interface ISystemetService
     {
-        Task<List<BeerData>> SearchSystemetAsync(string searchString);
-        Task<BeerData> SearchSingleBeer(int id);
-        Task<List<BeerData>> GetNews(string region);
+        Task<List<Beer.BeerDataModel>> SearchSystemetAsync(string searchString);
+        Task<Beer.BeerDataModel> SearchSingleBeer(int id);
+        Task<List<Beer.BeerDataModel>> GetNews(string region);
     }
 }

@@ -23,7 +23,7 @@ namespace MyBeers.Api.Services
             HttpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "ce26456ac64b43a38dbc40dc6925177c");
         }
 
-        public async Task<List<BeerData>> GetNews(string region)
+        public async Task<List<Beer.BeerDataModel>> GetNews(string region)
         {
             string regionText = (region != null) ? "&originLevel1=" + region : "";
             var today = DateTime.UtcNow.Date;
@@ -35,14 +35,14 @@ namespace MyBeers.Api.Services
                 var data = await response.Content.ReadAsStringAsync();
                 var objects = JsonConvert.DeserializeObject<BeerListModel>(data);
 
-                var mappedBeer = _mapper.Map<List<BeerData>>(objects.Hits);
+                var mappedBeer = _mapper.Map<List<Beer.BeerDataModel>>(objects.Hits);
 
                 return mappedBeer;
             }
-            return new List<BeerData>();
+            return new List<Beer.BeerDataModel>();
         }
 
-        public async Task<BeerData> SearchSingleBeer(int id)
+        public async Task<Beer.BeerDataModel> SearchSingleBeer(int id)
         {
             var response = await HttpClient.GetAsync($"product/v1/product/{id}");
 
@@ -50,7 +50,7 @@ namespace MyBeers.Api.Services
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var systemetData = JsonConvert.DeserializeObject<SystemetBeerIn>(data);
-                var mappedBeer = _mapper.Map<BeerData>(systemetData);
+                var mappedBeer = _mapper.Map<Beer.BeerDataModel>(systemetData);
                 mappedBeer.ImageUrl = BuildImageUrls.BuildUrl((int)mappedBeer.ProductId);
                 return mappedBeer;
             }
@@ -58,30 +58,18 @@ namespace MyBeers.Api.Services
             return null;
         }
 
-        public async Task<List<BeerData>> SearchSystemetAsync(string searchString)
+        public async Task<List<Beer.BeerDataModel>> SearchSystemetAsync(string searchString)
         {
-            var timer = new Stopwatch();
-            timer.Start();
             var response = await HttpClient.GetAsync($"product/v1/product/search?SearchQuery={searchString}&Category=Öl&SubCategory=Öl");
 
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
                 var objects = JsonConvert.DeserializeObject<BeerListModel>(data);
-                var mappedBeers = _mapper.Map<List<BeerData>>(objects.Hits);
-
-                //foreach (var item in mappedBeers)
-                //{
-                //    item.ImageUrl = BuildImageUrls.BuildUrl((int)item.ProductId);
-                //}
-
-                timer.Stop();
-                var elapsed = timer.ElapsedMilliseconds;
+                var mappedBeers = _mapper.Map<List<Beer.BeerDataModel>>(objects.Hits);
                 
-                    return mappedBeers;
+                return mappedBeers;
             }
-
-
 
             return null;
         }
