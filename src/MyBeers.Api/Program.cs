@@ -14,6 +14,7 @@ namespace MyBeers.Api
 
         public static IWebHostBuilder BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseContentRoot(Directory.GetCurrentDirectory())
                 .ConfigureAppConfiguration((builderContext, confBuilder) =>
                 {
                     var env = builderContext.HostingEnvironment;
