@@ -44,8 +44,6 @@ namespace MyBeers.Api
             services.AddControllers();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-            
             
             services.Configure<DBSettings>(
                 Configuration.GetSection(nameof(DBSettings)));
@@ -116,18 +114,18 @@ namespace MyBeers.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(sp => sp
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+            );
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), @"uploads")),
                 RequestPath = new PathString("/uploads")
             });
-
-            app.UseCors(sp => sp
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-            );
 
             app.UseSwagger();
 
