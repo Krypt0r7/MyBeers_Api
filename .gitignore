@@ -232,5 +232,3 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
-/src/MyBeers.Api/Properties
-/src/MyBeers.Api/uploads

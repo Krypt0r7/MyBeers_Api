@@ -16,11 +16,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyBeers.Api.Services;
-using Microsoft.OpenApi.Models;
 using MyBeers.Api.Utils;
-using Microsoft.Extensions.FileProviders;
-using System.IO;
-using Microsoft.AspNetCore.Http;
+using Microsoft.OpenApi.Models;
 
 namespace MyBeers.Api
 {
@@ -119,13 +116,6 @@ namespace MyBeers.Api
                 .AllowAnyMethod()
                 .AllowAnyHeader()
             );
-
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), @"uploads")),
-                RequestPath = new PathString("/uploads")
-            });
 
             app.UseSwagger();
 
