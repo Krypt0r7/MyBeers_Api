@@ -227,9 +227,11 @@ namespace MyBeers.Api.Services
             if (user == null)
                 return null;
 
+            var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, "uploads");
+
             string fileName = Guid.NewGuid().ToString() + ".png";
 
-            var filePath = Path.Combine(@"C:\SiteImages\mybeers", fileName);
+            var filePath = Path.Combine(uploads, fileName);
             try
             {
                 using(var fileStream = new FileStream(filePath, FileMode.Create)) 
