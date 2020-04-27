@@ -19,5 +19,16 @@ namespace MyBeers.Api.Controllers
         }
 
 
+        public async Task<IActionResult> Lists(string userId)
+        {
+
+            var lists = await _listservice.GetListsAsync(userId);
+            foreach (var list in lists)
+            {
+                
+            }
+            return Ok(lists);
+        }
+
     }
 }

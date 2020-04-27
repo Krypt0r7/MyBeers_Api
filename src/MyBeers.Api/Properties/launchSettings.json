@@ -1,0 +1,39 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": false,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:51210",
+      "sslPort": 443
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "environmentVariables": {
+        "MongoSettings:UserCollection": "User",
+        "MongoSettings:ConnectionString": "mongodb+srv://dbUser:zmoCio0b366Jp4No@mybeer-lb8do.mongodb.net/test?retryWrites=true&w=majority",
+        "MongoSettings:DatabaseName": "MyBeer",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "MonogSettings:BeerCollection": "Beer",
+        "AppSettings:Secret": "MightBeOneOfTheMostWellKeptSecrets"
+      }
+    },
+    "MyBeers.Api": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DBSettings:UserCollection": "User",
+        "DBSettings:BeerCollection": "Beer",
+        "DBSettings:ConnectionString": "mongodb://localhost:27017/?readPreference=primary&ssl=false",
+        "DBSettings:DatabaseName": "MyBeers",
+        "DBSettings:RatingCollection": "Rating",
+        "AppSettings:BlobStorage": "DefaultEndpointsProtocol=https;AccountName=mybeers;AccountKey=7fWq/TQiw86VZ1UoTbfD7jtlSwW8LTM0wNMD7fCNuyCb4bNEMdZEEY817GXnYYKPu30H0KSnqoW0vnMGa1ErHw==;EndpointSuffix=core.windows.net",
+        "DBSettings:ListCollection": "List",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AppSettings:Secret": "f0a6a49b405600c4ac41aacf4bcf76ea"
+      },
+      "applicationUrl": "http://localhost:51210"
+    }
+  }
+}
