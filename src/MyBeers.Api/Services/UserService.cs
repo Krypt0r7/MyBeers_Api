@@ -1,4 +1,8 @@
 ﻿using AutoMapper;
+using Azure.Storage.Blobs;
+using ImageMagick;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
@@ -9,10 +13,14 @@ using MyBeers.Api.Exceptions;
 using MyBeers.Api.Utils;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MyBeers.Api.Services
@@ -23,12 +31,14 @@ namespace MyBeers.Api.Services
         readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
         private readonly IBeerService _beerService;
+        private IWebHostEnvironment _hostingEnvironment;
 
         public UserService(
             IMapper mapper,
             IOptions<AppSettings> appSettings,
             IDBSettings mongoSettings,
-            IBeerService beerService)
+            IBeerService beerService,
+            IWebHostEnvironment hostEnvironment)
         {
             var client = new MongoClient(mongoSettings.ConnectionString);
             var database = client.GetDatabase(mongoSettings.DatabaseName);
@@ -36,6 +46,7 @@ namespace MyBeers.Api.Services
             _appSettings = appSettings.Value;
             _mapper = mapper;
             _beerService = beerService;
+            _hostingEnvironment = hostEnvironment;
         }
 
 
@@ -210,15 +221,33 @@ namespace MyBeers.Api.Services
         }
 
 
-        public async Task<UpdateResult> UpdateAvatarAsync(string id, AvatarUploadDto avatar)
+        public async Task<UpdateResult> UpdateAvatarAsync(string id, IFormFile image, string path)
         {
             var user = await _user.Find(x => x.Id == id).FirstOrDefaultAsync();
             if (user == null)
                 return null;
 
+            var uploads = Path.Combine(_hostingEnvironment.ContentRootPath, "uploads");
+
+            string fileName = Guid.NewGuid().ToString() + ".png";
+
+            var filePath = Path.Combine(uploads, fileName);
+            try
+            {
+                using(var fileStream = new FileStream(filePath, FileMode.Create)) 
+                { 
+                    await image.CopyToAsync(fileStream);
+                    fileStream.Close();
+                }
+                ResizeImage(filePath);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
             var filter = Builders<User>.Filter.Eq(x => x.Id, id);
             var update = Builders<User>.Update
-                .Set(s => s.AvatarUrl, avatar.File);
+                .Set(s => s.AvatarUrl, path + "/uploads/" + fileName);
 
             var result = await _user.UpdateOneAsync(filter, update);
             return result;
@@ -232,6 +261,18 @@ namespace MyBeers.Api.Services
                 return null;
 
             return user;
+        }
+
+
+        private void ResizeImage(string path)
+        {
+            using (var image = new MagickImage(path))
+            {
+                image.Resize(200, 200);
+                image.Strip();
+                image.Quality = 75;
+                image.Write(path);
+            } 
         }
     }
 }

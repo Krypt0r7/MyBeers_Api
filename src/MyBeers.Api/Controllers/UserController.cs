@@ -38,6 +38,7 @@ namespace MyBeers.Api.Controllers
         {
             try
             {
+
                 await _userService.CreateAsync(userRegisterDto);
                 return Ok("User created");
 
@@ -190,15 +191,17 @@ namespace MyBeers.Api.Controllers
             return BadRequest("Error updating user data");
         }
 
+        [AllowAnonymous]
         [HttpPost("{id}/uploadImage")]
-        public async Task<IActionResult> UploadAvatar([FromBody]AvatarUploadDto file, string id)
+        public async Task<IActionResult> UploadAvatar([FromForm(Name = "image")] IFormFile image, string id)
         {
-            var result = await _userService.UpdateAvatarAsync(id, file);
+            var value = Request.Scheme + "://" + Request.Host.Value;
+            var result = await _userService.UpdateAvatarAsync(id, image, value);
 
-            if(result.IsAcknowledged)
+            if (result.IsAcknowledged)
                 return Ok(_mapper.Map<UserDto>(await _userService.GetByIdAsync(id)));
-            
-            if(result == null)
+
+            if (result == null)
                 return BadRequest("User not found");
 
             return BadRequest("Something went wrong");

@@ -8,5 +8,6 @@ namespace MyBeers.Api.Utils
     public class AppSettings
     {
         public string Secret { get; set; }
+        public string BlobStorage { get; set; }
     }
 }

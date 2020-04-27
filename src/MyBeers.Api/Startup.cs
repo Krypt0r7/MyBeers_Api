@@ -16,8 +16,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyBeers.Api.Services;
-using MyBeers.Api.Utils;
 using Microsoft.OpenApi.Models;
+using MyBeers.Api.Utils;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace MyBeers.Api
 {
@@ -41,6 +44,8 @@ namespace MyBeers.Api
             services.AddControllers();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            
             
             services.Configure<DBSettings>(
                 Configuration.GetSection(nameof(DBSettings)));
@@ -110,6 +115,13 @@ namespace MyBeers.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), @"uploads")),
+                RequestPath = new PathString("/uploads")
+            });
 
             app.UseCors(sp => sp
                 .AllowAnyOrigin()
