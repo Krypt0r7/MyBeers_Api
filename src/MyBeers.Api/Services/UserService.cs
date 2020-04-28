@@ -244,8 +244,6 @@ namespace MyBeers.Api.Services
 
                 string fileName = Guid.NewGuid().ToString() + ".png";
 
-
-
                 using (var fileToUpload = new MemoryStream())
                 { 
                     image.CopyTo(fileToUpload);
@@ -267,7 +265,7 @@ namespace MyBeers.Api.Services
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
