@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using MyBeers.Api.Services;
 using MyBeers.Api.Utils;
 using Microsoft.OpenApi.Models;
+using Amazon.S3;
 
 namespace MyBeers.Api
 {
@@ -96,6 +97,8 @@ namespace MyBeers.Api
                     ValidateAudience = false
                 };
             });
+
+            services.AddAWSService<IAmazonS3>();
 
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IBeerService, BeerService>();

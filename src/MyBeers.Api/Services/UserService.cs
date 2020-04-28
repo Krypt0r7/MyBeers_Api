@@ -1,4 +1,10 @@
-﻿using AutoMapper;
+﻿using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.S3.Transfer;
+using Amazon.S3.Util;
+using AutoMapper;
+using ImageMagick;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
@@ -10,6 +16,7 @@ using MyBeers.Api.Utils;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -23,12 +30,14 @@ namespace MyBeers.Api.Services
         readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
         private readonly IBeerService _beerService;
+        private readonly IAmazonS3 _s3client;
 
         public UserService(
             IMapper mapper,
             IOptions<AppSettings> appSettings,
             IDBSettings mongoSettings,
-            IBeerService beerService)
+            IBeerService beerService,
+            IAmazonS3 s3client)
         {
             var client = new MongoClient(mongoSettings.ConnectionString);
             var database = client.GetDatabase(mongoSettings.DatabaseName);
@@ -36,6 +45,7 @@ namespace MyBeers.Api.Services
             _appSettings = appSettings.Value;
             _mapper = mapper;
             _beerService = beerService;
+            _s3client = s3client;
         }
 
 
@@ -210,18 +220,58 @@ namespace MyBeers.Api.Services
         }
 
 
-        public async Task<UpdateResult> UpdateAvatarAsync(string id, AvatarUploadDto avatar)
+        public async Task<UpdateResult> UpdateAvatarAsync(string id, IFormFile image)
         {
             var user = await _user.Find(x => x.Id == id).FirstOrDefaultAsync();
             if (user == null)
                 return null;
 
-            var filter = Builders<User>.Filter.Eq(x => x.Id, id);
-            var update = Builders<User>.Update
-                .Set(s => s.AvatarUrl, avatar.File);
+            string bucketName = "mybeers-avatars";
 
-            var result = await _user.UpdateOneAsync(filter, update);
-            return result;
+            try
+            {
+                if (await AmazonS3Util.DoesS3BucketExistV2Async(_s3client, bucketName) == false)
+                {
+                    var putBucket = new PutBucketRequest
+                    {
+                        BucketName = bucketName,
+                        UseClientRegion = true
+                    };
+                    var response = await _s3client.PutBucketAsync(putBucket);
+                }
+
+                var fileTransferUtil = new TransferUtility(_s3client);
+
+                string fileName = Guid.NewGuid().ToString() + ".png";
+
+
+
+                using (var fileToUpload = new MemoryStream())
+                { 
+                    image.CopyTo(fileToUpload);
+                    fileToUpload.Position = 0;
+                    using (var pic = new MagickImage(fileToUpload))
+                    {
+                        pic.Resize(250, 250);
+                        pic.Format = MagickFormat.Png;
+
+                        pic.Write(fileToUpload);
+                    }
+
+                    await fileTransferUtil.UploadAsync(fileToUpload, bucketName, fileName);
+
+                    var update = Builders<User>.Update
+                        .Set(s => s.AvatarUrl, $"https://mybeers-avatars.s3.eu-north-1.amazonaws.com/{fileName}");
+
+                    var result = await _user.UpdateOneAsync(Builders<User>.Filter.Eq(x => x.Id, id), update);
+                    return result;
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
         }
 
         public async Task<User> GetByUserName(string username)

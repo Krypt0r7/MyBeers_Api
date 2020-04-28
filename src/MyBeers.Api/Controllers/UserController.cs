@@ -191,9 +191,12 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpPost("{id}/uploadImage")]
-        public async Task<IActionResult> UploadAvatar([FromBody]AvatarUploadDto file, string id)
+        public async Task<IActionResult> UploadAvatar([FromForm(Name = "image")] IFormFile image, string id)
         {
-            var result = await _userService.UpdateAvatarAsync(id, file);
+            if (image.Length > 300000)
+                return BadRequest("Image can't be larger than 300 kb");
+
+            var result = await _userService.UpdateAvatarAsync(id, image);
 
             if(result.IsAcknowledged)
                 return Ok(_mapper.Map<UserDto>(await _userService.GetByIdAsync(id)));
