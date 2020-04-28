@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.AspNetCore.Http;
+using MongoDB.Driver;
 using MyBeers.Api.Data;
 using MyBeers.Api.Dtos;
 using System;
@@ -19,7 +20,7 @@ namespace MyBeers.Api.Services
         Task<DeleteResult> RemoveUser(string id);
         Task<UpdateResult> UpdateUsersPasswordAsync(string id, string password);
         Task<UpdateResult> UpdateUserDataAsync(string id, UpdateUserCommandDto updateUserCommandDto);
-        Task<UpdateResult> UpdateAvatarAsync(string id, AvatarUploadDto avatar);
+        Task<UpdateResult> UpdateAvatarAsync(string id, IFormFile image);
         Task<User> GetByUserName(string userName);
     }
 }
