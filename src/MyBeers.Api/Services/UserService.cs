@@ -1,4 +1,5 @@
-﻿using Amazon.S3;
+﻿using Amazon.Runtime;
+using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Amazon.S3.Util;
@@ -228,6 +229,7 @@ namespace MyBeers.Api.Services
 
             string bucketName = "mybeers-avatars";
 
+            
             try
             {
                 if (await AmazonS3Util.DoesS3BucketExistV2Async(_s3client, bucketName) == false)

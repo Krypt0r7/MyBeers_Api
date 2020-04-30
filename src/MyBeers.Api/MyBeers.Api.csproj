@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="AWSSDK.Extensions.NETCORE.Setup" Version="3.3.101" />
-    <PackageReference Include="AWSSDK.S3" Version="3.3.110.58" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.110.60" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />

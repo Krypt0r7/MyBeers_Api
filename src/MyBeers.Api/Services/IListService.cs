@@ -10,6 +10,7 @@ namespace MyBeers.Api.Services
         Task CreateListAsync(string userId);
         Task<List<List>> GetListsAsync();
         Task<List<List>> GetListsAsync(string userId);
+        Task<List<List>> GetCollabListsAsync(string collaboratorId);
         Task<List> GetListAsync(string id);
         Task<UpdateResult> UpdateListAsync(string id);
         Task<DeleteResult> DeleteListAsync(string id);

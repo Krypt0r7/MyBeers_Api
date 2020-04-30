@@ -19,6 +19,13 @@ using MyBeers.Api.Services;
 using MyBeers.Api.Utils;
 using Microsoft.OpenApi.Models;
 using Amazon.S3;
+using Amazon.Util;
+using Amazon.Runtime.CredentialManagement;
+using Amazon.Internal;
+using Microsoft.AspNetCore.Http;
+using Microsoft.CodeAnalysis.Options;
+using Amazon.Runtime.Internal;
+using Amazon.Runtime;
 
 namespace MyBeers.Api
 {
@@ -56,6 +63,7 @@ namespace MyBeers.Api
             {
                 x.SwaggerDoc("v1", new OpenApiInfo {Title = "MyBeers API", Version = "v1" });
             });
+
 
             //JWT secrets get
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -97,7 +105,9 @@ namespace MyBeers.Api
                     ValidateAudience = false
                 };
             });
-
+     
+            services.AddMvc();
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions("AWSOptions"));
             services.AddAWSService<IAmazonS3>();
 
             services.AddSingleton<IUserService, UserService>();
