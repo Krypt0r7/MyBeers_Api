@@ -1,74 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
-using MyBeers.Api.Dtos;
-using MyBeers.Api.Services;
+using MyBeers.Api.Base;
+using MyBeers.Common.Dispatchers;
+using MyBeers.RatingLib.Api.Commands;
+using MyBeers.RatingLib.Api.Queries;
 
 namespace MyBeers.Api.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class RatingController : Controller
+    public class RatingController : BaseController
     {
-        private readonly IBeerService _beerService;
-        private readonly IUserService _userService;
-        private readonly IRatingService _ratingService;
-        private readonly IMapper _mapper;
-        public RatingController(
-            IBeerService beerService,
-            IUserService userService,
-            IRatingService ratingService,
-            IMapper mapper)
+        public RatingController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher) : base(queryDispatcher, commandDispatcher)
         {
-            _beerService = beerService;
-            _userService = userService;
-            _ratingService = ratingService;
-            _mapper = mapper;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRating(CreateRatingDto ratingDto)
+        public async Task<IActionResult> CreateUpdate([FromBody]CreateUpdateRatingCommand createRatingCommand)
         {
-            var userId = HttpContext.User.Identity.Name;
             try
             {
-                var createRatingCommand = new CreateRatingCommand
-                {
-                    Beer = await _beerService.GetBeerByIdAsync(ratingDto.BeerId),
-                    OverallRating = ratingDto.OverallRating,
-                    AfterTaste = ratingDto.AfterTaste,
-                    Chugability = ratingDto.Chugability,
-                    FirstImpression = ratingDto.FirstImpression,
-                    Taste = ratingDto.Taste,
-                    Value = ratingDto.Value,
-                    Description = ratingDto.Description,
-                    UserId = userId
-                };
-                await _ratingService.CreateRatingAsync(createRatingCommand);
+                await CommandDispatcher.DispatchAsync(createRatingCommand);
 
-                var ratings = await _ratingService.GetRatingsByUserId(userId);
-                var rating = ratings.FirstOrDefault(x => x.BeerId == ratingDto.BeerId);
-                var ratingNewDto = new RatingAndUsersQueryDto
-                {
-                    Description = rating.Description,
-                    OverallRating = rating.OverallRating,
-                    AfterTaste = rating.AfterTaste,
-                    Chugability = rating.Chugability,
-                    FirstImpression = rating.FirstImpression,
-                    Taste = rating.Taste,
-                    CreatedTime = rating.CreatedTime,
-                    Id = rating.Id,
-                };
-                ratingNewDto.User = _mapper.Map<UserDto>(await _userService.GetByIdAsync(rating.UserId));
-
-                return Ok(ratingNewDto);
+                return AcceptedAtAction(nameof(CreateUpdate), new { beerId = createRatingCommand.BeerId }, null);
             }
             catch (Exception ex)
             {
@@ -78,68 +36,50 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AllRatings()
+        public async Task<IActionResult> Ratings([FromQuery]RatingsQuery ratingsQuery)
         {
-            var ratings = await _ratingService.GetRatingsAsync();
-            var beers = await _beerService.GetAllBeersAsync();
-            var users = await _userService.GetAsync();
-
-            var ratingList = new List<RaingUserAndBeerDto>();
-
-            foreach (var rating in ratings)
+            try
             {
-                ratingList.Add(new RaingUserAndBeerDto
-                {
-                    Beer = _mapper.Map<BeerDto>(beers.First(x => x.Id == rating.BeerId)),
-                    CreatedTime = rating.CreatedTime,
-                    OverallRating = rating.OverallRating,
-                    AfterTaste = rating.AfterTaste,
-                    Chugability = rating.Chugability,
-                    FirstImpression = rating.FirstImpression,
-                    Taste = rating.Taste,
-                    Value = rating.Value,
-                    Description = rating.Description,
-                    User = _mapper.Map<UserDto>(users.First(x => x.Id == rating.UserId))
-                });
+                var ratings = await QueryDispatcher.DispatchAsync<RatingsQuery, IEnumerable<RatingsQuery.Rating>>(ratingsQuery);
+                return Ok(ratings);
             }
-
-            return Ok(ratingList);
-        }
-
-
-        [HttpPost("{id}")]
-        public async Task<IActionResult> UpdateRatingAsync(UpdateRatingCommand updateRatingCommand, [FromRoute]string id)
-        {
-            var result = await _ratingService.UpdateRatingAsync(id, updateRatingCommand);
-            if (result.IsAcknowledged)
+            catch (Exception ex)
             {
-                var rating = await _ratingService.GetRatingAsync(id);
-                var ratingDto = new RatingAndUsersQueryDto
-                {
-                    Description = rating.Description,
-                    OverallRating = rating.OverallRating,
-                    AfterTaste = rating.AfterTaste,
-                    Chugability = rating.Chugability,
-                    FirstImpression = rating.FirstImpression,
-                    Taste = rating.Taste,
-                    Value = rating.Value,
-                    CreatedTime = rating.CreatedTime,
-                    Id = rating.Id,
-                    User = _mapper.Map<UserDto>(await _userService.GetByIdAsync(rating.UserId))
-                };
-                return Ok(ratingDto);
+
+                return BadRequest(ex);
             }
-            return BadRequest("Update failed");
         }
-        
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRating(string id)
+
+        [HttpGet]
+        public async Task<IActionResult> Rating([FromQuery]RatingQuery ratingQuery)
         {
-            var result = await _ratingService.DeleteRatingAsync(id);
-            if (result.IsAcknowledged)
-                return Ok("Rating removed");
-            return BadRequest("Deletion faulty");
+            try
+            {
+                var rating = await QueryDispatcher.DispatchAsync<RatingQuery, RatingQuery.Rating>(ratingQuery);
+                return Ok(rating);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ByBeer([FromQuery]RatingsByBeerQuery ratingsByBeerQuery)
+        {
+            try
+            {
+                var ratings = await QueryDispatcher.DispatchAsync<RatingsByBeerQuery, IEnumerable<RatingsByBeerQuery.Rating>>(ratingsByBeerQuery);
+                return Ok(ratings);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+
+
 
     }
 }

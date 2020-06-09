@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.11.0-beta1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyBeers.BeerLib.Api\MyBeers.BeerLib.Api.csproj" />
+    <ProjectReference Include="..\MyBeers.BeerLib\MyBeers.BeerLib.csproj" />
+    <ProjectReference Include="..\MyBeers.Common\MyBeers.Common.csproj" />
+    <ProjectReference Include="..\MyBeers.ListLib.Api\MyBeers.ListLib.Api.csproj" />
+    <ProjectReference Include="..\MyBeers.UserLib\MyBeers.UserLib.csproj" />
+  </ItemGroup>
+
+</Project>

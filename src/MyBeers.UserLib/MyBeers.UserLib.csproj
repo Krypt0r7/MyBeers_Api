@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.5.0-beta" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.16.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyBeers.BeerLib.Api\MyBeers.BeerLib.Api.csproj" />
+    <ProjectReference Include="..\MyBeers.Common\MyBeers.Common.csproj" />
+    <ProjectReference Include="..\MyBeers.RatingLib.Api\MyBeers.RatingLib.Api.csproj" />
+    <ProjectReference Include="..\MyBeers.UserLib.Api\MyBeers.UserLib.Api.csproj" />
+    <ProjectReference Include="..\MyBeers.Utilities\MyBeers.Utilities.csproj" />
+  </ItemGroup>
+
+</Project>
