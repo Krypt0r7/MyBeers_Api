@@ -1,187 +1,119 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MyBeers.Api.Dtos;
-using MyBeers.Api.Services;
+using MyBeers.Api.Base;
+using MyBeers.BeerLib.Api.Queries;
+using MyBeers.BeerLib.Seed.Commands;
+using MyBeers.Common.Dispatchers;
 
 namespace MyBeers.Api.Controllers
 {
-    [Authorize]
-    [ApiController]
-    [Route("[controller]")]
-    public class BeerController : Controller
-    {
-        private readonly IBeerService _beerService;
-        private readonly IUserService _userService;
-        private readonly IMapper _mapper;
-        private readonly IRatingService _ratingService;
-        public BeerController(
-            IBeerService beerService, 
-            IUserService userService, 
-            IRatingService ratingService,
-            IMapper mapper)
-        {
-            _beerService = beerService;
-            _userService = userService;
-            _ratingService = ratingService;
-            _mapper = mapper;
-        }
+	[Authorize]
+	[ApiController]
+	[Route("[controller]/[action]")]
+	public class BeerController : BaseController
+	{
+		
+		public BeerController(IQueryDispatcher queryDispatcher,	ICommandDispatcher commandDispatcher) : base(queryDispatcher, commandDispatcher)
+		{
+		}
+
+		[HttpPost("seed/create")]
+		public async Task<IActionResult> CreateSeed(CreateBeerCommand createBeerCommand)
+		{
+			await CommandDispatcher.DispatchAsync(createBeerCommand);
+			return Ok();
+		}
 
 
-        [HttpGet("by-user")]
-        public async Task<IActionResult> BeersByUSerAsync()
-        {
-            var userId = HttpContext.User.Identity.Name;
+		[HttpGet]
+		public async Task<IActionResult> Beer([FromQuery]BeerQuery beerQuery)
+		{
+			try
+			{
+				var beer = await QueryDispatcher.DispatchAsync<BeerQuery, BeerQuery.Beer>(beerQuery);
+				return Ok(beer);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex);
+			}
 
-            var user = await _userService.GetByIdAsync(userId);
-            if (user == null)
-                return BadRequest("No user found");
-            if (user.BeerIds == null)
-            {
-                return Ok(new List<BeerQueryDto>());
-            }
-
-            var beers = await _beerService.GetUsersBeerAsync(user.BeerIds);
-
-            var beersDto = _mapper.Map<List<BeerQueryDto>>(beers);
-
-            var userRatings = await _ratingService.GetRatingsByUserId(user.Id);
-
-            foreach (var beer in beersDto)
-            {
-                beer.Rating = _mapper.Map<RatingQueryDto>(userRatings.FirstOrDefault(f => f.BeerId == beer.Id));
-            }
-
-            return Ok(beersDto);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> BeerAsync(string id)
-        {
-            var userid = HttpContext.User.Identity.Name;
-            var beer = await _beerService.GetBeerByIdAsync(id);
-            var ratings = await _ratingService.GetRatingsByUserId(userid);
-
-            var beerDto = new BeerQueryDto
-            {
-                Added = beer.Added,
-                BeerData = beer.BeerData,
-                Id = beer.Id,
-                YPK = beer.YPK,
-            };
-            var rating = ratings.FirstOrDefault(x => x.BeerId == beer.Id);
-            if (rating != null)
-                beerDto.Rating = _mapper.Map<RatingQueryDto>(rating);
-
-            return Ok(beerDto);
-        }
+		}
 
 
-        [AllowAnonymous]
-        [HttpGet("ranking")]
-        public async Task<IActionResult> BestRatedBeer()
-        {
-            var listOfBest = await _beerService.GetTopOrBottomRatedBeerAsync(null, true);
-              
-            var listOfWorst = await _beerService.GetTopOrBottomRatedBeerAsync(null, false);
-            return Ok(new { listOfBest, listOfWorst });
-        }
+		[AllowAnonymous]
+		[HttpGet]
+		public async Task<IActionResult> BestWorst([FromQuery]BestWorstQuery bestWorstQuery)
+		{
+			try
+			{
+				var lists = await QueryDispatcher.DispatchAsync<BestWorstQuery, BestWorstQuery.BestWorst>(bestWorstQuery);
 
-        [HttpGet("{id}/ratings")]
-        public async Task<IActionResult> BeersRatingsAsync (string id)
-        {
-            var beer = await _beerService.GetBeerByIdAsync(id);
-            var ratings = await _ratingService.GetRatingsAsync(new List<string> { id });
-            var users = await _userService.GetAsync();
+				return Ok(lists);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex);
+			}
+		}
 
-            var beerDto = new BeerAndRatingsQueryDto
-            {
-                Added = beer.Added,
-                BeerData = beer.BeerData,
-                Id = beer.Id,
-                YPK = beer.YPK
-            };
+		[HttpGet]
+		public async Task<IActionResult> Ratings([FromQuery]BeerRatingsQuery beerRatingsQuery)
+		{
+			try
+			{
+				var beer = await QueryDispatcher.DispatchAsync<BeerRatingsQuery, BeerRatingsQuery.Beer>(beerRatingsQuery);
+				return Ok(beer);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex);
+			}
+		}
 
-            beerDto.Ratings = new List<RatingAndUsersQueryDto>();
-            
-            foreach (var rating in ratings)
-            {
-                beerDto.Ratings.Insert(0, new RatingAndUsersQueryDto
-                {
-                    Id = rating.Id,
-                    CreatedTime = rating.CreatedTime,
-                    OverallRating = rating.OverallRating,
-                    AfterTaste = rating.AfterTaste,
-                    Chugability = rating.Chugability,
-                    FirstImpression = rating.FirstImpression,
-                    Taste = rating.Taste,
-                    Value = rating.Value,
-                    Description = rating.Description,
-                    User = _mapper.Map<UserDto>(users.Where(x => x.Id == rating.UserId).First())
-                });
-            }
-            return Ok(beerDto);
-        }
+		[AllowAnonymous]
+		[HttpGet]
+		public async Task<IActionResult> Search([FromQuery]SearchBeerQuery searchBeerQuery)
+		{
+			try
+			{
+				var result = await QueryDispatcher.DispatchAsync<SearchBeerQuery, IEnumerable<SearchBeerQuery.Beer>>(searchBeerQuery);
+				return Ok(result);
+			}
+			catch (Exception ex)
+			{
 
-        [HttpGet]
-        public async Task<IActionResult> BeersAsync()
-        {
-            var beers = await _beerService.GetAllBeersAsync();
-            var beerRatings = await _ratingService.GetRatingsAsync();
-            var users = await _userService.GetAsync();
+				return BadRequest(ex);
+			}
+		}
 
-            var beerDtos = new List<BeerAndRatingsQueryDto>();
+		[HttpGet]
+		public async Task<IActionResult> News([FromQuery]BeersNewRegionQuery beersNewRegionQuery)
+		{
+			try
+			{
+				var beers = await QueryDispatcher.DispatchAsync<BeersNewRegionQuery, IEnumerable<BeersNewRegionQuery.Beer>>(beersNewRegionQuery);
+				return Ok(beers);
+			}
+			catch (Exception)
+			{
+				return BadRequest();
+			}
+		}
 
-            foreach (var beer in beers)
-            {
-                var beerDto = new BeerAndRatingsQueryDto
-                {
-                    Id = beer.Id,
-                    Added = beer.Added,
-                    BeerData = beer.BeerData,
-                    YPK = beer.YPK,
-                };
 
-                var ratingList = beerRatings.Where(f => f.BeerId == beer.Id).ToList();
-                foreach (var rating in ratingList)
-                {
-                    beerDto.Ratings = new List<RatingAndUsersQueryDto>();
+		//[HttpPost]
+		//public async Task<IActionResult> CreateNewBeer(int productId)
+		//{
+		//	var beer = await _beerService.SaveBeerProdNumberAsync(productId);
+		//	if (beer == null)
+		//		return BadRequest("ProductId yielded no result");
 
-                    beerDto.Ratings.Add(new RatingAndUsersQueryDto
-                    {
-                        Id = rating.Id,
-                        CreatedTime = rating.CreatedTime,
-                        OverallRating = rating.OverallRating,
-                        AfterTaste = rating.AfterTaste,
-                        Chugability = rating.Chugability,
-                        FirstImpression = rating.FirstImpression,
-                        Taste = rating.Taste,
-                        Value = rating.Value,
-                        Description = rating.Description,
-                        User = _mapper.Map<UserDto>(users.Where(x => x.Id == rating.UserId).First())
-                    });
-                }
+		//	return Ok(beer);
+		//}
 
-                beerDtos.Add(beerDto);
-            }
-
-            return Ok(beerDtos);
-
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateNewBeer(int productId)
-        {
-            var beer = await _beerService.SaveBeerProdNumberAsync(productId);
-            if (beer == null)
-                return BadRequest("ProductId yielded no result");
-
-            return Ok(beer);
-        }
-   
-    }
+	}
 }

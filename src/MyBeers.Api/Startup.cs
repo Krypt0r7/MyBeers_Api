@@ -1,31 +1,28 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using MyBeers.Api.Services;
-using MyBeers.Api.Utils;
 using Microsoft.OpenApi.Models;
 using Amazon.S3;
-using Amazon.Util;
-using Amazon.Runtime.CredentialManagement;
-using Amazon.Internal;
-using Microsoft.AspNetCore.Http;
-using Microsoft.CodeAnalysis.Options;
-using Amazon.Runtime.Internal;
-using Amazon.Runtime;
+using System.Linq;
+using MyBeers.Common.CommonInterfaces;
+using MyBeers.Common.Dispatchers;
+using System.Reflection;
+using MyBeers.Common.MongoSettings;
+using System.Collections.Generic;
+using MyBeers.Api.Queries;
+using MyBeers.Utilities;
+using MyBeers.BeerLib.Seed.Commands;
+using MyBeers.RatingLib.QueryHandlers;
+using MyBeers.UserLib.CommandHandlers;
+using MyBeers.ListLib.CommandHandlers;
+using MyBeers.UserLib.Api.Queries;
 
 namespace MyBeers.Api
 {
@@ -38,6 +35,15 @@ namespace MyBeers.Api
 
         public IConfiguration Configuration { get; }
 
+        public List<Assembly> Assemblies = new List<Assembly>
+        {
+            typeof(CreateListCommandHandler).GetTypeInfo().Assembly,
+            typeof(CreateUserCommandHandler).GetTypeInfo().Assembly,
+            typeof(RatingsQueryHandler).GetTypeInfo().Assembly,
+            typeof(SeedBeerCommand).GetTypeInfo().Assembly,
+            typeof(AuthenticateUserQuery).GetTypeInfo().Assembly,
+        };
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options => {
@@ -46,14 +52,19 @@ namespace MyBeers.Api
                 options.AddPolicy("AllowAllHeaders", builder => builder.AllowAnyHeader());
             });
 
-            services.AddControllers();
+            services.AddScoped(typeof(IMongoRepository<>), typeof(Repository<>));
 
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            
-            services.Configure<DBSettings>(
-                Configuration.GetSection(nameof(DBSettings)));
-            services.AddSingleton<IDBSettings>(sp =>
-                sp.GetRequiredService<IOptions<DBSettings>>().Value);
+            services.AddControllers().AddNewtonsoftJson();
+
+            services.Configure<Utils.DBSettings>(
+                Configuration.GetSection(nameof(Utils.DBSettings)));
+            services.AddSingleton<Utils.IDBSettings>(sp =>
+                sp.GetRequiredService<IOptions<Utils.DBSettings>>().Value);
+
+
+            services.Configure<Common.MongoSettings.DBSettings>(Configuration.GetSection(nameof(Common.MongoSettings.DBSettings)));
+            services.AddSingleton<Common.MongoSettings.IDBSettings>(sp =>
+                sp.GetRequiredService<IOptions<Common.MongoSettings.DBSettings>>().Value);
 
             services.AddRouting(opt => opt.LowercaseUrls = true);
 
@@ -63,7 +74,6 @@ namespace MyBeers.Api
             {
                 x.SwaggerDoc("v1", new OpenApiInfo {Title = "MyBeers API", Version = "v1" });
             });
-
 
             //JWT secrets get
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -84,9 +94,9 @@ namespace MyBeers.Api
                 {
                     OnTokenValidated = context =>
                     {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+                        var queryDispatcher = context.HttpContext.RequestServices.GetRequiredService<IQueryDispatcher>();
                         var userId = context.Principal.Identity.Name;
-                        var user = userService.GetByIdAsync(userId);
+                        var user = queryDispatcher.DispatchAsync<UserQuery, UserQuery.User>(new UserQuery { Id = userId });
                         if (user == null)
                         {
                             // return unauthorized if user no longer exists
@@ -105,15 +115,33 @@ namespace MyBeers.Api
                     ValidateAudience = false
                 };
             });
-     
+            
+            var commandHandlers = Assemblies.SelectMany(x => x.GetTypes())
+                .Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICommandHandler<>)));
+
+            foreach (var handler in commandHandlers)
+            {
+                services.AddScoped(handler.GetInterfaces()
+                    .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICommandHandler<>)), handler);
+            }
+
+            var queryHandlers = Assemblies.SelectMany(x => x.GetTypes())
+                .Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IQueryHandler<,>)));
+
+            foreach (var handler in queryHandlers)
+            {
+                services.AddScoped(handler.GetInterfaces()
+                    .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IQueryHandler<,>)), handler);
+            }
+
+
+            services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+            services.AddScoped<IQueryDispatcher, QueryDispatcher>();
+
             services.AddMvc();
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions("AWSOptions"));
             services.AddAWSService<IAmazonS3>();
 
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IBeerService, BeerService>();
-            services.AddSingleton<ISystemetService, SystemetService>();
-            services.AddSingleton<IRatingService, RatingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -150,5 +178,17 @@ namespace MyBeers.Api
                 endpoints.MapControllers();
             });
         }
+
+        //private static void AddCommandQueryHandlers(this IServiceCollection services, Type handlerInterface)
+        //{
+        //    var handlers = typeof(Startup).Assembly.GetTypes()
+        //        .Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == handlerInterface)
+        //    );
+
+        //    foreach (var handler in handlers)
+        //    {
+        //        services.AddScoped(handler.GetInterfaces().First(i => i.IsGenericType && i.GetGenericTypeDefinition() == handlerInterface), handler);
+        //    }
+        //}
     }
 }

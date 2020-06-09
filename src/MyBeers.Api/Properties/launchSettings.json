@@ -29,6 +29,7 @@
         "DBSettings:DatabaseName": "MyBeers",
         "DBSettings:RatingCollection": "Rating",
         "AppSettings:BlobStorage": "DefaultEndpointsProtocol=https;AccountName=mybeers;AccountKey=7fWq/TQiw86VZ1UoTbfD7jtlSwW8LTM0wNMD7fCNuyCb4bNEMdZEEY817GXnYYKPu30H0KSnqoW0vnMGa1ErHw==;EndpointSuffix=core.windows.net",
+        "AppSettings:OcpKeySystemet": "ce26456ac64b43a38dbc40dc6925177c",
         "DBSettings:ListCollection": "List",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "AppSettings:Secret": "f0a6a49b405600c4ac41aacf4bcf76ea"
