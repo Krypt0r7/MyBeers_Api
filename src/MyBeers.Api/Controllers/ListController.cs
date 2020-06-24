@@ -18,9 +18,9 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Lists([FromQuery]ListsByUserIdQuery listsByUserIdQuery)
+        public IActionResult Lists([FromQuery]ListsByUserIdQuery listsByUserIdQuery)
         { 
-            var lists = await QueryDispatcher.DispatchAsync<ListsByUserIdQuery, IEnumerable<ListsByUserIdQuery.ListByUserId>>(listsByUserIdQuery);
+            var lists = QueryDispatcher.Dispatch<ListsByUserIdQuery, IEnumerable<ListsByUserIdQuery.ListByUserId>>(listsByUserIdQuery);
             return Ok(lists);
         }
 

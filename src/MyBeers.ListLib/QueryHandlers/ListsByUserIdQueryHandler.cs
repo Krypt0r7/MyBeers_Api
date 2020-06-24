@@ -17,11 +17,11 @@ namespace MyBeers.ListLib.QueryHandlers
         {
         }
 
-        public override async Task<IEnumerable<ListsByUserIdQuery.ListByUserId>> HandleAsync(ListsByUserIdQuery query)
+        public override IEnumerable<ListsByUserIdQuery.ListByUserId> Handle(ListsByUserIdQuery query)
         {
             var lists = Repository.FilterBy(filter => filter.OwnerId == query.UserId).ToList();
 
-            var user = await this.QueryDispatcher.DispatchAsync<UserQuery, UserQuery.User>(
+            var user = QueryDispatcher.Dispatch<UserQuery, UserQuery.User>(
                 new UserQuery
                 {
                     Id = query.UserId
@@ -44,7 +44,7 @@ namespace MyBeers.ListLib.QueryHandlers
 
         private IEnumerable<ListsByUserIdQuery.Beer> GetBeers(List<string> beerIds)
         {
-            var beers = QueryDispatcher.DispatchAsync<BeersByIdsQuery, IEnumerable<BeersByIdsQuery.Beer>>(new BeersByIdsQuery { BeerIds = beerIds }).Result;
+            var beers = QueryDispatcher.Dispatch<BeersByIdsQuery, IEnumerable<BeersByIdsQuery.Beer>>(new BeersByIdsQuery { BeerIds = beerIds });
            
             return beers.Select(beer => new ListsByUserIdQuery.Beer { ProductName = beer.Producer, Id = beer.Id, Name = beer.Name });
         }

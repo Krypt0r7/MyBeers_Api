@@ -13,10 +13,10 @@ namespace MyBeers.UserLib.QueryHandlers
     {
         public UsersQueryHandler(IMongoRepository<User> repository, IQueryDispatcher queryDispatcher) : base(repository, queryDispatcher){}
 
-        public override Task<IEnumerable<UsersQuery.User>> HandleAsync(UsersQuery query)
+        public override IEnumerable<UsersQuery.User> Handle(UsersQuery query)
         {
             var users = Repository.FilterBy(filter => true);
-            return Task.Run(() => users.Select(s => new UsersQuery.User { AvatarUrl = s.AvatarUrl, Email = s.Email, Id = s.Id.ToString(), Username = s.Username }));
+            return users.Select(s => new UsersQuery.User { AvatarUrl = s.AvatarUrl, Email = s.Email, Id = s.Id.ToString(), Username = s.Username });
         }
 
     }

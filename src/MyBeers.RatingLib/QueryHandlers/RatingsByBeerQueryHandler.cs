@@ -18,9 +18,9 @@ namespace MyBeers.RatingLib.QueryHandlers
         {
         }
 
-        public override async Task<IEnumerable<RatingsByBeerQuery.Rating>> HandleAsync(RatingsByBeerQuery query)
+        public override IEnumerable<RatingsByBeerQuery.Rating> Handle(RatingsByBeerQuery query)
         {
-            var beer = await QueryDispatcher.DispatchAsync<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = query.BeerId });
+            var beer = QueryDispatcher.Dispatch<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = query.BeerId });
 
             if (beer == null)
                 throw new Exception("Beer not found");
@@ -45,7 +45,7 @@ namespace MyBeers.RatingLib.QueryHandlers
 
         private RatingsByBeerQuery.User GetUser(string id)
         {
-            var user = QueryDispatcher.DispatchAsync<UserQuery, UserQuery.User>(new UserQuery { Id = id }).Result;
+            var user = QueryDispatcher.Dispatch<UserQuery, UserQuery.User>(new UserQuery { Id = id });
 
             return new RatingsByBeerQuery.User
             {

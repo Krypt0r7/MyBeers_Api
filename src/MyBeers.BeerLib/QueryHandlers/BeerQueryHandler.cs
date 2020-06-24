@@ -14,9 +14,9 @@ namespace MyBeers.BeerLib.beerHandlers
         {
         }
 
-        public override async Task<BeerQuery.Beer> HandleAsync(BeerQuery query)
+        public override BeerQuery.Beer Handle(BeerQuery query)
         {
-            var beer = await Repository.FindByIdAsync(query.Id);
+            var beer = Repository.FindById(query.Id);
 
             if (beer == null)
                 throw new Exception("Beer not found");

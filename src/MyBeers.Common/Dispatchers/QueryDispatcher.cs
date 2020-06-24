@@ -13,10 +13,10 @@ namespace MyBeers.Common.Dispatchers
         {
             _serviceProvider = serviceProvider;
         }
-        public async Task<TResult> DispatchAsync<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult>
+        public TResult Dispatch<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult>
         {
             var service = this._serviceProvider.GetService(typeof(IQueryHandler<TQuery, TResult>)) as IQueryHandler<TQuery, TResult>;
-            return await service.HandleAsync(query);
+            return service.Handle(query);
         }
     }
 }

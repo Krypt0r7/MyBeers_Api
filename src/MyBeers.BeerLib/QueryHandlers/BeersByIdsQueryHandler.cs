@@ -15,12 +15,12 @@ namespace MyBeers.BeerLib.QueryHandlers
         {
         }
 
-        public override async Task<IEnumerable<BeersByIdsQuery.Beer>> HandleAsync(BeersByIdsQuery query)
+        public override IEnumerable<BeersByIdsQuery.Beer> Handle(BeersByIdsQuery query)
         {
             var beers = new List<Domain.Beer>();
             foreach (var item in query.BeerIds)
             {
-                beers.Add(await Repository.FindByIdAsync(item));
+                beers.Add(Repository.FindById(item));
             }
            
             return beers.Select(x => new BeersByIdsQuery.Beer { Id = x.Id.ToString(), Alcohol = x.AlcoholPercentage, City = x.City, Country = x.Country, Name = x.Name, Price = x.Price, Producer = x.Producer, State = x.State });

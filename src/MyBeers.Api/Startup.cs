@@ -99,7 +99,7 @@ namespace MyBeers.Api
                     {
                         var queryDispatcher = context.HttpContext.RequestServices.GetRequiredService<IQueryDispatcher>();
                         var userId = context.Principal.Identity.Name;
-                        var user = queryDispatcher.DispatchAsync<UserQuery, UserQuery.User>(new UserQuery { Id = userId });
+                        var user = queryDispatcher.Dispatch<UserQuery, UserQuery.User>(new UserQuery { Id = userId });
                         if (user == null)
                         {
                             // return unauthorized if user no longer exists

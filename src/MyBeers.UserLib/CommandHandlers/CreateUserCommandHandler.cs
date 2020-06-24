@@ -17,7 +17,7 @@ namespace MyBeers.UserLib.CommandHandlers
 
         public override async Task HandleAsync(CreateUserCommand command)
         {
-            var usertest = await Repository.FindOneAsync(filter => filter.Username == command.Username);
+            var usertest = Repository.FindOne(filter => filter.Username == command.Username);
             if (usertest != null)
                 throw new Exception("User already exists");
 

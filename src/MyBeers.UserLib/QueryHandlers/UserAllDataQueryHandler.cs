@@ -19,11 +19,11 @@ namespace MyBeers.UserLib.QueryHandlers
         {
         }
 
-        public override async Task<UserAllDataQuery.User> HandleAsync(UserAllDataQuery query)
+        public override UserAllDataQuery.User Handle(UserAllDataQuery query)
         {
-            var user = await Repository.FindByIdAsync(query.Id);
+            var user = Repository.FindById(query.Id);
 
-            var ratings = await QueryDispatcher.DispatchAsync<RatingsByUserQuery, IEnumerable<RatingsByUserQuery.Rating>>(new RatingsByUserQuery { UserId = user.Id.ToString() });
+            var ratings = QueryDispatcher.Dispatch<RatingsByUserQuery, IEnumerable<RatingsByUserQuery.Rating>>(new RatingsByUserQuery { UserId = user.Id.ToString() });
 
             return new UserAllDataQuery.User
             {
@@ -39,14 +39,14 @@ namespace MyBeers.UserLib.QueryHandlers
                     FirstImpression = x.FirstImpression,
                     OverallRating = x.OverallRating,
                     Taste = x.Taste,
-                    Beer = GetBeer(x.BeerId).Result
+                    Beer = GetBeer(x.BeerId)
                 })
             };
         }
 
-        private async Task<UserAllDataQuery.Beer> GetBeer(string beerId)
+        private UserAllDataQuery.Beer GetBeer(string beerId)
         {
-            var beer = await QueryDispatcher.DispatchAsync<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = beerId });
+            var beer = QueryDispatcher.Dispatch<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = beerId });
             return new UserAllDataQuery.Beer
             {
                 Id = beer.Id,

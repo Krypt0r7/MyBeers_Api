@@ -20,7 +20,7 @@ namespace MyBeers.ListLib.CommandHandlers
         public override async Task HandleAsync(UpdateListCommand command)
         {
 
-            var list = await Repository.FindByIdAsync(command.ListId);
+            var list = Repository.FindById(command.ListId);
 
             if (list.BeerIds.Contains(command.BeerId))
             {
@@ -28,7 +28,7 @@ namespace MyBeers.ListLib.CommandHandlers
             }
             else
             {
-                var beer = await QueryDispatcher.DispatchAsync<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = command.BeerId});
+                var beer = QueryDispatcher.Dispatch<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = command.BeerId});
 
                 list.BeerIds.Add(beer.Id);
             }

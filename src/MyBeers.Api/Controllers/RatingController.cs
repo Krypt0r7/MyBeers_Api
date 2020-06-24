@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -36,12 +37,12 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Ratings([FromQuery]RatingsQuery ratingsQuery)
+        public IActionResult Ratings([FromQuery]RatingsQuery ratingsQuery)
         {
             try
             {
-                var ratings = await QueryDispatcher.DispatchAsync<RatingsQuery, IEnumerable<RatingsQuery.Rating>>(ratingsQuery);
-                return Ok(ratings);
+                var ratings = QueryDispatcher.Dispatch<RatingsQuery, IEnumerable<RatingsQuery.Rating>>(ratingsQuery);
+                return Ok(ratings.ToList());
             }
             catch (Exception ex)
             {
@@ -51,11 +52,11 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Rating([FromQuery]RatingQuery ratingQuery)
+        public IActionResult Rating([FromQuery]RatingQuery ratingQuery)
         {
             try
             {
-                var rating = await QueryDispatcher.DispatchAsync<RatingQuery, RatingQuery.Rating>(ratingQuery);
+                var rating = QueryDispatcher.Dispatch<RatingQuery, RatingQuery.Rating>(ratingQuery);
                 return Ok(rating);
             }
             catch (Exception ex)
@@ -65,11 +66,11 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ByBeer([FromQuery]RatingsByBeerQuery ratingsByBeerQuery)
+        public IActionResult ByBeer([FromQuery]RatingsByBeerQuery ratingsByBeerQuery)
         {
             try
             {
-                var ratings = await QueryDispatcher.DispatchAsync<RatingsByBeerQuery, IEnumerable<RatingsByBeerQuery.Rating>>(ratingsByBeerQuery);
+                var ratings = QueryDispatcher.Dispatch<RatingsByBeerQuery, IEnumerable<RatingsByBeerQuery.Rating>>(ratingsByBeerQuery);
                 return Ok(ratings);
             }
             catch (Exception ex)
