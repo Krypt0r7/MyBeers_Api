@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver.Core.Misc;
+using MyBeers.BeerLib.Domain;
 using MyBeers.Common.CommonInterfaces;
 using System;
 using System.Collections.Generic;
@@ -25,10 +26,11 @@ namespace MyBeers.BeerLib.Seed.Commands
         public string Usage { get; }
         public string Taste { get; }
         public long ProductIdSystemet { get; }
+        public SystemetInformation SystemetInformation { get; }
         public DateTime SellStartSystemet { get; set; }
         public string ImageUrl { get; }
 
-        public CreateBeerCommand(string name, string producer, string container, double recycleFee, double alcoholPrecentage, double volume, double price, double ypk, string country, string state, string city, string type, string style, string scale, string usage, string taste, long sysProdId, DateTime dateTime, string imageUrl)
+        public CreateBeerCommand(string name, string producer, string container, double recycleFee, double alcoholPrecentage, double volume, double price, double ypk, string country, string state, string city, string type, string style, string scale, string usage, string taste, long sysProdId, SystemetInformation systemetInformation, DateTime dateTime, string imageUrl)
         {
             Name = name;
             Producer = producer;
@@ -47,6 +49,7 @@ namespace MyBeers.BeerLib.Seed.Commands
             Usage = usage;
             Taste = taste;
             ProductIdSystemet = sysProdId;
+            SystemetInformation = systemetInformation;
             SellStartSystemet = dateTime;
             ImageUrl = imageUrl;
         }

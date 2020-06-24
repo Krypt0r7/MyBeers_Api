@@ -9,7 +9,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
     <PackageReference Include="MongoDB.Driver" Version="2.11.0-beta1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.1.0" />
@@ -22,6 +22,8 @@
     <ProjectReference Include="..\MyBeers.Common\MyBeers.Common.csproj" />
     <ProjectReference Include="..\MyBeers.ListLib.Api\MyBeers.ListLib.Api.csproj" />
     <ProjectReference Include="..\MyBeers.ListLib\MyBeers.ListLib.csproj" />
+    <ProjectReference Include="..\MyBeers.Migration.Api\MyBeers.Migration.Api.csproj" />
+    <ProjectReference Include="..\MyBeers.Migration\MyBeers.Migration.csproj" />
     <ProjectReference Include="..\MyBeers.RatingLib.Api\MyBeers.RatingLib.Api.csproj" />
     <ProjectReference Include="..\MyBeers.RatingLib\MyBeers.RatingLib.csproj" />
     <ProjectReference Include="..\MyBeers.UserLib.Api\MyBeers.UserLib.Api.csproj" />

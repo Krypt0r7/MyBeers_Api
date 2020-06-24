@@ -23,6 +23,8 @@ using MyBeers.RatingLib.QueryHandlers;
 using MyBeers.UserLib.CommandHandlers;
 using MyBeers.ListLib.CommandHandlers;
 using MyBeers.UserLib.Api.Queries;
+using MyBeers.Migration.Api.Commands;
+using MyBeers.Migration.CommandHandlers;
 
 namespace MyBeers.Api
 {
@@ -42,6 +44,7 @@ namespace MyBeers.Api
             typeof(RatingsQueryHandler).GetTypeInfo().Assembly,
             typeof(SeedBeerCommand).GetTypeInfo().Assembly,
             typeof(AuthenticateUserQuery).GetTypeInfo().Assembly,
+            typeof(MigrateDataCommandHandler).GetTypeInfo().Assembly
         };
 
         public void ConfigureServices(IServiceCollection services)

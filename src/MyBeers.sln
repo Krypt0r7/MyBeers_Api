@@ -17,13 +17,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBeers.BeerLib", "MyBeers.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBeers.RatingLib", "MyBeers.RatingLib\MyBeers.RatingLib.csproj", "{3B8473C4-172A-43E8-AE89-8BD1EBFAF19E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBeers.RatingLib.Api", "MyBeers.RatingLib.Api\MyBeers.RatingLib.Api.csproj", "{8DDCA5F3-527E-4CB1-B691-BCD950A55A9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBeers.RatingLib.Api", "MyBeers.RatingLib.Api\MyBeers.RatingLib.Api.csproj", "{8DDCA5F3-527E-4CB1-B691-BCD950A55A9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBeers.BeerLib.Api", "MyBeers.BeerLib.Api\MyBeers.BeerLib.Api.csproj", "{06614670-FFE3-47A2-B67E-30D23793D7C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBeers.BeerLib.Api", "MyBeers.BeerLib.Api\MyBeers.BeerLib.Api.csproj", "{06614670-FFE3-47A2-B67E-30D23793D7C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBeers.ListLib.Api", "MyBeers.ListLib.Api\MyBeers.ListLib.Api.csproj", "{6D8EC745-7A57-4B0C-9C8B-5AA763306C90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBeers.ListLib.Api", "MyBeers.ListLib.Api\MyBeers.ListLib.Api.csproj", "{6D8EC745-7A57-4B0C-9C8B-5AA763306C90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBeers.UserLib.Api", "MyBeers.UserLib.Api\MyBeers.UserLib.Api.csproj", "{64B17262-A498-4CA0-9CCD-68EC894C2919}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBeers.UserLib.Api", "MyBeers.UserLib.Api\MyBeers.UserLib.Api.csproj", "{64B17262-A498-4CA0-9CCD-68EC894C2919}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBeers.Migration", "MyBeers.Migration\MyBeers.Migration.csproj", "{CB8BA8F7-7E4D-4C63-BF65-BC21677DE601}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBeers.Migration.Api", "MyBeers.Migration.Api\MyBeers.Migration.Api.csproj", "{9FFD846D-133A-4C3F-86B5-8AEA424EDF17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +79,14 @@ Global
 		{64B17262-A498-4CA0-9CCD-68EC894C2919}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64B17262-A498-4CA0-9CCD-68EC894C2919}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64B17262-A498-4CA0-9CCD-68EC894C2919}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB8BA8F7-7E4D-4C63-BF65-BC21677DE601}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB8BA8F7-7E4D-4C63-BF65-BC21677DE601}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB8BA8F7-7E4D-4C63-BF65-BC21677DE601}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB8BA8F7-7E4D-4C63-BF65-BC21677DE601}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FFD846D-133A-4C3F-86B5-8AEA424EDF17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FFD846D-133A-4C3F-86B5-8AEA424EDF17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FFD846D-133A-4C3F-86B5-8AEA424EDF17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FFD846D-133A-4C3F-86B5-8AEA424EDF17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

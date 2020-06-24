@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyBeers.BeerLib.Api\MyBeers.BeerLib.Api.csproj" />
+    <ProjectReference Include="..\MyBeers.BeerLib\MyBeers.BeerLib.csproj" />
+    <ProjectReference Include="..\MyBeers.Common\MyBeers.Common.csproj" />
+    <ProjectReference Include="..\MyBeers.ListLib.Api\MyBeers.ListLib.Api.csproj" />
+    <ProjectReference Include="..\MyBeers.ListLib\MyBeers.ListLib.csproj" />
+    <ProjectReference Include="..\MyBeers.Migration.Api\MyBeers.Migration.Api.csproj" />
+    <ProjectReference Include="..\MyBeers.RatingLib.Api\MyBeers.RatingLib.Api.csproj" />
+    <ProjectReference Include="..\MyBeers.RatingLib\MyBeers.RatingLib.csproj" />
+    <ProjectReference Include="..\MyBeers.UserLib.Api\MyBeers.UserLib.Api.csproj" />
+    <ProjectReference Include="..\MyBeers.UserLib\MyBeers.UserLib.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -11,6 +11,7 @@ namespace MyBeers.UserLib.Domain
         public string Username { get; set; }
         public string Email { get; set; }
         public string AvatarUrl { get; set; }
+        public string OldId { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
     }

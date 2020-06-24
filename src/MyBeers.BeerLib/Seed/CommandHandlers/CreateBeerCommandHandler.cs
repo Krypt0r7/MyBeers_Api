@@ -40,6 +40,7 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
                 Type = command.Type,
                 Usage = command.Usage,
                 Volume = command.Volume,
+                SystemetInformation = command.SystemetInformation,
                 YPK = command.YPK,
                 SellStartDate = command.SellStartSystemet
             };

@@ -26,6 +26,7 @@ namespace MyBeers.BeerLib.Domain
         public string Taste { get; set; }
         public DateTime SellStartDate { get; set; }
         public long ProductIdSystemet { get; set; }
+        public SystemetInformation SystemetInformation { get; set; }
         public string ImageUrl { get; set; }
     }
 }
