@@ -29,11 +29,11 @@ namespace MyBeers.Api.Controllers
 
 
 		[HttpGet]
-		public async Task<IActionResult> Beer([FromQuery]BeerQuery beerQuery)
+		public IActionResult Beer([FromQuery]BeerQuery beerQuery)
 		{
 			try
 			{
-				var beer = await QueryDispatcher.DispatchAsync<BeerQuery, BeerQuery.Beer>(beerQuery);
+				var beer = QueryDispatcher.Dispatch<BeerQuery, BeerQuery.Beer>(beerQuery);
 				return Ok(beer);
 			}
 			catch (Exception ex)
@@ -46,11 +46,11 @@ namespace MyBeers.Api.Controllers
 
 		[AllowAnonymous]
 		[HttpGet]
-		public async Task<IActionResult> BestWorst([FromQuery]BestWorstQuery bestWorstQuery)
+		public IActionResult BestWorst([FromQuery]BestWorstQuery bestWorstQuery)
 		{
 			try
 			{
-				var lists = await QueryDispatcher.DispatchAsync<BestWorstQuery, BestWorstQuery.BestWorst>(bestWorstQuery);
+				var lists = QueryDispatcher.Dispatch<BestWorstQuery, BestWorstQuery.BestWorst>(bestWorstQuery);
 
 				return Ok(lists);
 			}
@@ -61,11 +61,11 @@ namespace MyBeers.Api.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> Ratings([FromQuery]BeerRatingsQuery beerRatingsQuery)
+		public IActionResult Ratings([FromQuery]BeerRatingsQuery beerRatingsQuery)
 		{
 			try
 			{
-				var beer = await QueryDispatcher.DispatchAsync<BeerRatingsQuery, BeerRatingsQuery.Beer>(beerRatingsQuery);
+				var beer = QueryDispatcher.Dispatch<BeerRatingsQuery, BeerRatingsQuery.Beer>(beerRatingsQuery);
 				return Ok(beer);
 			}
 			catch (Exception ex)
@@ -76,11 +76,11 @@ namespace MyBeers.Api.Controllers
 
 		[AllowAnonymous]
 		[HttpGet]
-		public async Task<IActionResult> Search([FromQuery]SearchBeerQuery searchBeerQuery)
+		public IActionResult Search([FromQuery]SearchBeerQuery searchBeerQuery)
 		{
 			try
 			{
-				var result = await QueryDispatcher.DispatchAsync<SearchBeerQuery, IEnumerable<SearchBeerQuery.Beer>>(searchBeerQuery);
+				var result = QueryDispatcher.Dispatch<SearchBeerQuery, IEnumerable<SearchBeerQuery.Beer>>(searchBeerQuery);
 				return Ok(result);
 			}
 			catch (Exception ex)
@@ -91,11 +91,11 @@ namespace MyBeers.Api.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> News([FromQuery]BeersNewRegionQuery beersNewRegionQuery)
+		public IActionResult News([FromQuery]BeersNewRegionQuery beersNewRegionQuery)
 		{
 			try
 			{
-				var beers = await QueryDispatcher.DispatchAsync<BeersNewRegionQuery, IEnumerable<BeersNewRegionQuery.Beer>>(beersNewRegionQuery);
+				var beers = QueryDispatcher.Dispatch<BeersNewRegionQuery, IEnumerable<BeersNewRegionQuery.Beer>>(beersNewRegionQuery);
 				return Ok(beers);
 			}
 			catch (Exception)

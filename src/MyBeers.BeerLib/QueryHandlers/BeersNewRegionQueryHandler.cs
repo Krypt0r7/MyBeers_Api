@@ -17,10 +17,10 @@ namespace MyBeers.BeerLib.QueryHandlers
         {
         }
 
-        public override async Task<IEnumerable<BeersNewRegionQuery.Beer>> HandleAsync(BeersNewRegionQuery query)
+        public override IEnumerable<BeersNewRegionQuery.Beer> Handle(BeersNewRegionQuery query)
         {
             var now = DateTime.Now;
-            var beers = await Task.Run(() => Repository.AsQueryable().Where(x => x.SellStartDate > now && x.State == query.Region).ToList());
+            var beers = Repository.AsQueryable().Where(x => x.SellStartDate > now && x.State == query.Region).ToList();
 
 
             return beers.Select(x => new BeersNewRegionQuery.Beer

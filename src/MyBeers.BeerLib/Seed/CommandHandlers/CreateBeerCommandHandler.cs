@@ -16,7 +16,7 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
 
         public override async Task HandleAsync(CreateBeerCommand command)
         {
-            var beer = await Repository.FindOneAsync(filter => filter.ProductIdSystemet == command.ProductIdSystemet);
+            var beer = Repository.FindOne(filter => filter.ProductIdSystemet == command.ProductIdSystemet);
 
             if (beer != null)
                 return;

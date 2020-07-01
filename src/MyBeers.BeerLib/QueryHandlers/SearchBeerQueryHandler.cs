@@ -15,9 +15,9 @@ namespace MyBeers.BeerLib.QueryHandlers
         {
         }
 
-        public override async Task<IEnumerable<SearchBeerQuery.Beer>> HandleAsync(SearchBeerQuery query)
+        public override IEnumerable<SearchBeerQuery.Beer> Handle(SearchBeerQuery query)
         {
-            var beers = await Task.Run(() => { return Repository.AsQueryable().Where(beer => beer.Name.ToLower().Contains(query.SearchString.ToLower()) || beer.Producer.ToLower().Contains(query.SearchString.ToLower())); });           
+            var beers = Repository.AsQueryable().Where(beer => beer.Name.ToLower().Contains(query.SearchString.ToLower()) || beer.Producer.ToLower().Contains(query.SearchString.ToLower()));           
 
             var ordered = beers.OrderBy(x => x.Name).Take(40);
 

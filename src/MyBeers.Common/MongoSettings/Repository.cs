@@ -38,9 +38,9 @@ namespace MyBeers.Common.MongoSettings
             return _collection.Find(filterExpression).Project(projectionExpression).ToList();
         }
 
-        public Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression)
+        public TDocument FindOne(Expression<Func<TDocument, bool>> filterExpression)
         {
-            return _collection.Find(filterExpression).FirstOrDefaultAsync();
+            return _collection.Find(filterExpression).FirstOrDefault();
         }
 
         public Task SaveAsync(TDocument document)
@@ -55,10 +55,10 @@ namespace MyBeers.Common.MongoSettings
             await _collection.FindOneAndReplaceAsync(filter, document);
         }
 
-        public async Task<TDocument> FindByIdAsync(string id)
+        public TDocument FindById(string id)
         {
             var objectId = new ObjectId(id);
-            return await _collection.Find(f => f.Id == objectId).FirstOrDefaultAsync();
+            return _collection.Find(f => f.Id == objectId).FirstOrDefault();
         }
 
         public async Task DeleteAsync(string id)

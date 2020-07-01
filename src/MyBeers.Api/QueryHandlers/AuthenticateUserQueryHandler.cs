@@ -22,9 +22,9 @@ namespace MyBeers.Api.QueryHandlers
         {
             _appSettings = appsettings.Value;
         }
-        public override async Task<AuthenticateUserQuery.Authentication> HandleAsync(AuthenticateUserQuery query)
+        public override AuthenticateUserQuery.Authentication Handle(AuthenticateUserQuery query)
         {
-            var user = await Repository.FindOneAsync(filter => filter.Username.ToLower() == query.Username.ToLower());
+            var user = Repository.FindOne(filter => filter.Username.ToLower() == query.Username.ToLower());
             var passwordMatch = VerifyPasswordHash(query.Password, user.PasswordHash, user.PasswordSalt);
             if (!passwordMatch || user == null)
                 throw new Exception("Username or password where incorrect");

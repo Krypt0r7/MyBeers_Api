@@ -21,7 +21,7 @@ namespace MyBeers.ListLib.CommandHandlers
         public override async Task HandleAsync(UpdateListCommand command)
         {
 
-            var list = await Repository.FindByIdAsync(command.ListId);
+            var list = Repository.FindById(command.ListId);
 
             list.BeerIds = list.BeerIds.Where(x => command.BeerIds.Contains(x)).ToList();
 

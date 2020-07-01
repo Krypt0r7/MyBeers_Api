@@ -45,8 +45,8 @@ namespace MyBeers.Migration.CommandHandlers
                 foreach (var rating in ratings)
                 {
                     var oldBeer = beers.First(x => x.Id == rating.BeerId);
-                    var beer = await Repository.FindOneAsync(filter => filter.ProductIdSystemet == oldBeer.BeerData.ProductId);
-                    var user = await QueryDispatcher.DispatchAsync<UserByOldIdQuery, UserByOldIdQuery.User>(new UserByOldIdQuery { OldId = rating.UserId });
+                    var beer = Repository.FindOne(filter => filter.ProductIdSystemet == oldBeer.BeerData.ProductId);
+                    var user = QueryDispatcher.Dispatch<UserByOldIdQuery, UserByOldIdQuery.User>(new UserByOldIdQuery { OldId = rating.UserId });
                     await CommandDispatcher.DispatchAsync(new CreateUpdateRatingCommand(
                         rating.Taste, 
                         rating.AfterTaste, 
