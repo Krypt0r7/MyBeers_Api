@@ -9,7 +9,7 @@ using MyBeers.Api.Base;
 
 namespace MyBeers.Api.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     public class ListController : BaseController
     {
@@ -18,11 +18,20 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Lists([FromQuery]ListsByUserIdQuery listsByUserIdQuery)
+        public async Task<IActionResult> ListsFromUser([FromQuery]ListsByUserIdQuery listsByUserIdQuery)
         { 
             var lists = await QueryDispatcher.DispatchAsync<ListsByUserIdQuery, IEnumerable<ListsByUserIdQuery.ListByUserId>>(listsByUserIdQuery);
             return Ok(lists);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ListFromId([FromQuery]ListFromIdQuery query)
+        {
+            var list = await QueryDispatcher.DispatchAsync<ListFromIdQuery, ListFromIdQuery.List>(query);
+
+            return Ok(list);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateList([FromBody]CreateListCommand createListCommand)
@@ -34,12 +43,27 @@ namespace MyBeers.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
-        [HttpPost("update")]
-        public async Task<IActionResult> AddBeerToList([FromBody]UpdateListCommand updateListCommand)
+        [HttpPost]
+        public async Task<IActionResult> UpdateListInfo([FromBody]UpdateListInfoCommand updateListCommand)
+        {
+            try
+            {
+                await CommandDispatcher.DispatchAsync(updateListCommand);
+                return AcceptedAtAction(nameof(UpdateListInfo));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateBeers([FromBody]UpdateListCommand updateListCommand)
         {
             try
             {
@@ -48,9 +72,24 @@ namespace MyBeers.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteList([FromBody]DeleteListCommand deleteListCommand)
+        {
+            try
+            {
+                await CommandDispatcher.DispatchAsync(deleteListCommand);
+                return AcceptedAtAction(nameof(DeleteList));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
     }
 }

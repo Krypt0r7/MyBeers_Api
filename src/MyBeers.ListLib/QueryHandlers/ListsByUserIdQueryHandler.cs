@@ -46,7 +46,7 @@ namespace MyBeers.ListLib.QueryHandlers
         {
             var beers = QueryDispatcher.DispatchAsync<BeersByIdsQuery, IEnumerable<BeersByIdsQuery.Beer>>(new BeersByIdsQuery { BeerIds = beerIds }).Result;
            
-            return beers.Select(beer => new ListsByUserIdQuery.Beer { ProductName = beer.Producer, Id = beer.Id, Name = beer.Name });
+            return beers.Select(beer => new ListsByUserIdQuery.Beer { Producer = beer.Producer, Id = beer.Id, Name = beer.Name, Alcohol = beer.Alcohol, City = beer.City, Country = beer.Country, ImageUrl = beer.ImageUrl, Price = beer.Price, State = beer.State, SystemetProdId = beer.SystemetProdId });
         }
     }
 }

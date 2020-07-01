@@ -26,5 +26,7 @@ namespace MyBeers.Common.MongoSettings
         Task SaveAsync(TDocument document);
 
         Task ReplaceAsync(TDocument document);
+
+        Task DeleteAsync(string id);
     }
 }

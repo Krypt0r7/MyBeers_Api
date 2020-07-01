@@ -6,6 +6,7 @@ using MyBeers.ListLib.Api.Commands;
 using MyBeers.ListLib.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,15 +23,17 @@ namespace MyBeers.ListLib.CommandHandlers
 
             var list = await Repository.FindByIdAsync(command.ListId);
 
-            if (list.BeerIds.Contains(command.BeerId))
-            {
-                list.BeerIds.Remove(command.BeerId);
-            }
-            else
-            {
-                var beer = await QueryDispatcher.DispatchAsync<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = command.BeerId});
+            list.BeerIds = list.BeerIds.Where(x => command.BeerIds.Contains(x)).ToList();
 
-                list.BeerIds.Add(beer.Id);
+            var beersToAdd = command.BeerIds.Where(x => !list.BeerIds.Contains(x)).ToList();
+
+            if (beersToAdd.Count > 0)
+            {
+                var beers = await QueryDispatcher.DispatchAsync<BeersByIdsQuery, IEnumerable<BeersByIdsQuery.Beer>>(new BeersByIdsQuery {BeerIds = beersToAdd });
+                foreach (var beer in beers)
+                {
+                    list.BeerIds.Add(beer.Id);
+                }
             }
 
             await Repository.ReplaceAsync(list);

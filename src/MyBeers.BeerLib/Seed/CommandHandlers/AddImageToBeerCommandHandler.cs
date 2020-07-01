@@ -1,5 +1,5 @@
-﻿using MyBeers.BeerLib.Domain;
-using MyBeers.BeerLib.Seed.Commands;
+﻿using MyBeers.BeerLib.Api.Commands;
+using MyBeers.BeerLib.Domain;
 using MyBeers.Common.Bases;
 using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;

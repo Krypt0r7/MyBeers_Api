@@ -19,6 +19,8 @@ namespace MyBeers.BeerLib.Api.Queries
             public string Country { get; set; }
             public string State { get; set; }
             public string City { get; set; }
+            public string ImageUrl { get; set; }
+            public long SystemetProdId { get; set; }
         }
     }
 }

@@ -60,5 +60,11 @@ namespace MyBeers.Common.MongoSettings
             var objectId = new ObjectId(id);
             return await _collection.Find(f => f.Id == objectId).FirstOrDefaultAsync();
         }
+
+        public async Task DeleteAsync(string id)
+        {
+            var objectId = new ObjectId(id);
+            await _collection.DeleteOneAsync(filter => filter.Id == objectId);
+        }
     }
 }

@@ -35,13 +35,17 @@ namespace MyBeers.BeerLib.QueryHandlers
 
             foreach (var beer in grouped)
             {
-                double average = 0;
-                foreach (var rating in beer)
+                if (beer.Count() > 1)
                 {
-                    average += rating.OverallRating;
+                    double average = 0;
+                    foreach (var rating in beer)
+                    {
+                        average += rating.OverallRating;
+                    }
+                    average /= beer.Count();
+                    average = System.Math.Round(average, 2);
+                    beerCollection.Add(beers.First(f => f.Id.ToString() == beer.Key), average);
                 }
-                average /= beer.Count();
-                beerCollection.Add(beers.First(f => f.Id.ToString() == beer.Key), average);
             }
             var worstCol = beerCollection.OrderBy(x => x.Value).Take(5);
             

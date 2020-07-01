@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+using MyBeers.BeerLib.Api.Commands;
 using MyBeers.BeerLib.Domain;
-using MyBeers.BeerLib.Seed.Commands;
 using MyBeers.Common.Bases;
-using MyBeers.Common.CommonInterfaces;
 using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;
 using MyBeers.Utilities;
@@ -11,9 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 
@@ -73,28 +69,35 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
             double ypk = Math.Round(model.Volume * model.AlcoholPercentage / 40 / model.Price, 3);
 
 
-            var beerCommand = new CreateBeerCommand(
-                name,
-                model.ProducerName,
-                model.BottleTextShort,
-                model.RecycleFee,
-                model.AlcoholPercentage,
-                model.Volume,
-                model.Price,
-                ypk,
-                model.Country,
-                model.OriginLevel1,
-                model.OriginLevel2,
-                model.Type,
-                model.Style,
-                model.AssortmentText,
-                model.Usage,
-                model.Taste,
-                model.ProductId,
-                model,
-                model.SellStartDate,
-                null
-                );
+            var beerCommand = new CreateBeerCommand
+            {
+                Volume = model.Volume,
+                Style = model.Style,
+                Name = name,
+                Producer = model.ProducerName,
+                Container = model.BottleTextShort,
+                RecycleFee = model.RecycleFee,
+                AlcoholPercentage = model.AlcoholPercentage,
+                Price = model.Price,
+                YPK = ypk,
+                Country = model.Country,
+                State = model.OriginLevel1,
+                City = model.OriginLevel2,
+                Type = model.Type,
+                ProductionScale = model.AssortmentText,
+                Usage = model.Usage,
+                Taste = model.Taste,
+                ProductIdSystemet = model.ProductId,
+                SystemetInformationModel = new SystemetInformationModel
+                {
+                    AlcoholPercentage = model.AlcoholPercentage,
+                    Assortment = model.Assortment,
+                    AssortmentText = model.AssortmentText,
+                    BeverageDescriptionShort = model.BeverageDescriptionShort
+                },
+                SellStartSystemet = model.SellStartDate,
+                ImageUrl = null
+            };
 
             return beerCommand;
 

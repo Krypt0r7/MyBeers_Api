@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyBeers.Api.Base;
 using MyBeers.BeerLib.Api.Queries;
-using MyBeers.BeerLib.Seed.Commands;
+using MyBeers.BeerLib.Api.Commands;
 using MyBeers.Common.Dispatchers;
 
 namespace MyBeers.Api.Controllers

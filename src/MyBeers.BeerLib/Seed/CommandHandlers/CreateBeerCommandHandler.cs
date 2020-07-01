@@ -1,10 +1,10 @@
-﻿using MyBeers.BeerLib.Seed.Commands;
-using MyBeers.BeerLib.Domain;
+﻿using MyBeers.BeerLib.Domain;
 using MyBeers.Common.Bases;
 using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;
 using System.Threading.Tasks;
 using System;
+using MyBeers.BeerLib.Api.Commands;
 
 namespace MyBeers.BeerLib.Seed.CommandHandlers
 {
@@ -40,7 +40,47 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
                 Type = command.Type,
                 Usage = command.Usage,
                 Volume = command.Volume,
-                SystemetInformation = command.SystemetInformation,
+                SystemetInformation = new SystemetInformation
+                {
+                    BeverageDescriptionShort = command.SystemetInformationModel.BeverageDescriptionShort,
+                    AssortmentText = command.SystemetInformationModel.AssortmentText,
+                    Assortment = command.SystemetInformationModel.Assortment,
+                    AlcoholPercentage = command.SystemetInformationModel.AlcoholPercentage,
+                    BottleTextShort = command.SystemetInformationModel.BottleTextShort,
+                    Category = command.SystemetInformationModel.Category,
+                    Country = command.SystemetInformationModel.Country,
+                    EthicalLabel = command.SystemetInformationModel.EthicalLabel,
+                    IsCompletelyOutOfStock = command.SystemetInformationModel.IsCompletelyOutOfStock,
+                    IsEthical = command.SystemetInformationModel.IsEthical,
+                    IsKosher = command.SystemetInformationModel.IsKosher,
+                    IsManufacturingCountry = command.SystemetInformationModel.IsManufacturingCountry,
+                    IsNews = command.SystemetInformationModel.IsNews,
+                    IsOrganic = command.SystemetInformationModel.IsOrganic,
+                    IsRegionalRestricted = command.SystemetInformationModel.IsRegionalRestricted,
+                    IsTemporaryOutOfStock = command.SystemetInformationModel.IsTemporaryOutOfStock,
+                    IsWebLaunch = command.SystemetInformationModel.IsWebLaunch,
+                    OriginLevel1 = command.SystemetInformationModel.OriginLevel1,
+                    OriginLevel2 = command.SystemetInformationModel.OriginLevel2,
+                    Price = command.SystemetInformationModel.Price,
+                    ProducerName = command.SystemetInformationModel.ProducerName,
+                    ProductId = command.SystemetInformationModel.ProductId,
+                    ProductNameBold = command.SystemetInformationModel.ProductNameBold,
+                    ProductNameThin = command.SystemetInformationModel.ProductNameThin,
+                    ProductNumber = command.SystemetInformationModel.ProductNumber,
+                    ProductNumberShort = command.SystemetInformationModel.ProductNumberShort,
+                    RecycleFee = command.SystemetInformationModel.RecycleFee,
+                    RestrictedParcelQuantity = command.SystemetInformationModel.RestrictedParcelQuantity,
+                    Seal = command.SystemetInformationModel.Seal,
+                    SellStartDate = command.SystemetInformationModel.SellStartDate,
+                    Style = command.SystemetInformationModel.Style,
+                    SubCategory = command.SystemetInformationModel.SubCategory,
+                    SupplierName = command.SystemetInformationModel.SupplierName,
+                    Taste = command.SystemetInformationModel.Taste,
+                    Type = command.SystemetInformationModel.Type,
+                    Usage = command.SystemetInformationModel.Usage,
+                    Vintage = command.SystemetInformationModel.Vintage,
+                    Volume  = command.SystemetInformationModel.Volume
+                },
                 YPK = command.YPK,
                 SellStartDate = command.SellStartSystemet
             };

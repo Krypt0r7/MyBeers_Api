@@ -18,13 +18,13 @@ using MyBeers.Common.MongoSettings;
 using System.Collections.Generic;
 using MyBeers.Api.Queries;
 using MyBeers.Utilities;
-using MyBeers.BeerLib.Seed.Commands;
+using MyBeers.BeerLib.Api.Commands;
 using MyBeers.RatingLib.QueryHandlers;
 using MyBeers.UserLib.CommandHandlers;
 using MyBeers.ListLib.CommandHandlers;
 using MyBeers.UserLib.Api.Queries;
-using MyBeers.Migration.Api.Commands;
 using MyBeers.Migration.CommandHandlers;
+using MyBeers.BeerLib.Seed.CommandHandlers;
 
 namespace MyBeers.Api
 {
@@ -43,6 +43,7 @@ namespace MyBeers.Api
             typeof(CreateUserCommandHandler).GetTypeInfo().Assembly,
             typeof(RatingsQueryHandler).GetTypeInfo().Assembly,
             typeof(SeedBeerCommand).GetTypeInfo().Assembly,
+            typeof(SeedBeerCommandHandler).GetTypeInfo().Assembly,
             typeof(AuthenticateUserQuery).GetTypeInfo().Assembly,
             typeof(MigrateDataCommandHandler).GetTypeInfo().Assembly
         };

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MyBeers.BeerLib.Seed.Commands
+namespace MyBeers.BeerLib.Api.Commands
 {
     public class AddImageToBeerCommand : ICommand
     {
