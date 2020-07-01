@@ -16,9 +16,9 @@ namespace MyBeers.UserLib.QueryHandlers
         {
         }
 
-        public override UserByOldIdQuery.User Handle(UserByOldIdQuery query)
+        public override async Task<UserByOldIdQuery.User> HandleAsync(UserByOldIdQuery query)
         {
-            var user = Repository.FindOne(filter => filter.OldId == query.OldId);
+            var user = await Repository.FindOneAsync(filter => filter.OldId == query.OldId);
             return new UserByOldIdQuery.User
             {
                 AvatarUrl = user.AvatarUrl,

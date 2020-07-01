@@ -17,7 +17,7 @@ namespace MyBeers.RatingLib.CommandHandlers
 
         public override async Task HandleAsync(CreateUpdateRatingCommand command)
         {
-            var beer = QueryDispatcher.Dispatch<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = command.BeerId });
+            var beer = await QueryDispatcher.DispatchAsync<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = command.BeerId });
 
             var rating = Repository.FilterBy(filter => filter.BeerId == command.BeerId && filter.UserId == command.UserId).FirstOrDefault();
 

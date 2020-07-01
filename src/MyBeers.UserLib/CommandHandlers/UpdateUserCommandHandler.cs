@@ -18,7 +18,7 @@ namespace MyBeers.UserLib.CommandHandlers
 
         public override async Task HandleAsync(UpdateUserCommand command)
         {
-            var user = Repository.FindById(command.Id);
+            var user = await Repository.FindByIdAsync(command.Id);
             if (user == null)
             {
                 throw new Exception("User not found");

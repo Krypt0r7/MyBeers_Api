@@ -12,7 +12,7 @@ namespace MyBeers.Common.MongoSettings
     {
         IQueryable<TDocument> AsQueryable();
 
-        TDocument FindById(string id);
+        Task<TDocument> FindByIdAsync(string id);
 
         IEnumerable<TDocument> FilterBy(
             Expression<Func<TDocument, bool>> filterExpression);
@@ -21,7 +21,7 @@ namespace MyBeers.Common.MongoSettings
             Expression<Func<TDocument, bool>> filterExpression,
             Expression<Func<TDocument, TProjected>> projectionExpression);
 
-        TDocument FindOne(Expression<Func<TDocument, bool>> filterExpression);
+        Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression);
 
         Task SaveAsync(TDocument document);
 

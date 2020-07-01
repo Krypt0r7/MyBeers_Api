@@ -16,13 +16,16 @@ namespace MyBeers.BeerLib.QueryHandlers
         {
         }
 
-        public override BestWorstQuery.BestWorst Handle(BestWorstQuery query)
+        public override async Task<BestWorstQuery.BestWorst> HandleAsync(BestWorstQuery query)
         {
-            var ratings = QueryDispatcher.Dispatch<RatingsBasicsQuery, IEnumerable<RatingsBasicsQuery.Rating>>(new RatingsBasicsQuery());
+            var ratings = await QueryDispatcher.DispatchAsync<RatingsBasicsQuery, IEnumerable<RatingsBasicsQuery.Rating>>(new RatingsBasicsQuery());
 
             var beerIds = ratings.Select(s => s.BeerId).Distinct().ToList();
 
-            var beersQuery = Repository.AsQueryable().ToList();
+            var beersQuery = await Task.Run(() => 
+            {
+                return Repository.AsQueryable().ToList();
+            });
 
             var beers = beersQuery.Where(x => beerIds.Contains(x.Id.ToString())).ToList();
 

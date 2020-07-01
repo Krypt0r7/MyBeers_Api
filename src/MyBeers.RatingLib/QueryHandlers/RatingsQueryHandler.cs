@@ -7,6 +7,7 @@ using MyBeers.RatingLib.Api.Queries;
 using MyBeers.UserLib.Api.Queries;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyBeers.RatingLib.QueryHandlers
 {
@@ -16,15 +17,16 @@ namespace MyBeers.RatingLib.QueryHandlers
         {
         }
 
-        public override IEnumerable<RatingsQuery.Rating> Handle(RatingsQuery query)
+        public override async Task<IEnumerable<RatingsQuery.Rating>> HandleAsync(RatingsQuery query)
         {
-            var ratings = Repository.FilterBy(filter => true).Take(30).OrderByDescending(o => o.Created).ToList();
+            var ratings = await Task.Run(() => Repository.AsQueryable().ToList().OrderByDescending(o => o.Created).Take(30));
+
             var users = ratings.GroupBy(g => g.UserId)
-                .Select(z => QueryDispatcher.Dispatch<UserQuery, UserQuery.User>(new UserQuery { Id = z.Key }))
+                .Select(z => QueryDispatcher.DispatchAsync<UserQuery, UserQuery.User>(new UserQuery { Id = z.Key }).Result)
                 .Select(x => new RatingsQuery.User { Id = x.Id, AvatarUrl = x.AvatarUrl, Username = x.Username });
 
             var beers = ratings.GroupBy(g => g.BeerId)
-                .Select(z => QueryDispatcher.Dispatch<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = z.Key }))
+                .Select(z => QueryDispatcher.DispatchAsync<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = z.Key }).Result)
                 .Select(x => new RatingsQuery.Beer { Id = x.Id, Alcohol = x.AlcoholPercentage, Name = x.Name, Price = x.Price, Producer = x.Producer, Volume = x.Volume });
 
             return ratings.Select(x => new RatingsQuery.Rating 

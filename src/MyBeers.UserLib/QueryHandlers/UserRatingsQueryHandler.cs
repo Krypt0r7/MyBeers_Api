@@ -14,7 +14,7 @@ namespace MyBeers.UserLib.QueryHandlers
         {
         }
 
-        public override UserRatingsQuery.UserRatings Handle(UserRatingsQuery query)
+        public override Task<UserRatingsQuery.UserRatings> HandleAsync(UserRatingsQuery query)
         {
             throw new NotImplementedException();
         }

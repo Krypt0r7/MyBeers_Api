@@ -24,7 +24,7 @@ namespace MyBeers.UserLib.CommandHandlers
 
         public override async Task HandleAsync(UpdateAvatarImageCommand command)
         {
-            var user = Repository.FindById(command.Id);
+            var user = await Repository.FindByIdAsync(command.Id);
 
             var imageDataByteArray = Convert.FromBase64String(command.ImageData);
             string bucketName = "mybeers-avatars";

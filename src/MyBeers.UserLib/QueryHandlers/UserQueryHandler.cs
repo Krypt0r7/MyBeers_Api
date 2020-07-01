@@ -10,9 +10,9 @@ namespace MyBeers.UserLib.QueryHandlers
     public class UserQueryHandler : BaseQueryHandler<Domain.User,UserQuery, UserQuery.User>
     {
         public UserQueryHandler(IMongoRepository<Domain.User> repository, IQueryDispatcher queryDispatcher) : base(repository, queryDispatcher){}
-        public override UserQuery.User Handle(UserQuery query)
+        public override async Task<UserQuery.User> HandleAsync(UserQuery query)
         {
-            var user = Repository.FindById(query.Id);
+            var user = await Repository.FindByIdAsync(query.Id);
 
             if (user == null)
                 throw new Exception("User not found");

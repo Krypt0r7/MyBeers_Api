@@ -19,6 +19,6 @@ namespace MyBeers.Common.Bases
             QueryDispatcher = queryDispatcher;
         }
 
-        public abstract TResult Handle(TQuery query);
+        public abstract Task<TResult> HandleAsync(TQuery query);
     }
 }

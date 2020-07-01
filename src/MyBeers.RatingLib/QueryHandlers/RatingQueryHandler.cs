@@ -15,11 +15,11 @@ namespace MyBeers.RatingLib.QueryHandlers
         {
         }
 
-        public override RatingQuery.Rating Handle(RatingQuery query)
+        public override async Task<RatingQuery.Rating> HandleAsync(RatingQuery query)
         {
-            var rating = Repository.FindById(query.Id);
-            var user = QueryDispatcher.Dispatch<UserQuery, UserQuery.User>(new UserQuery { Id = rating.UserId });
-            var beer = QueryDispatcher.Dispatch<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = rating.BeerId });
+            var rating = await Repository.FindByIdAsync(query.Id);
+            var user = await QueryDispatcher.DispatchAsync<UserQuery, UserQuery.User>(new UserQuery { Id = rating.UserId });
+            var beer = await QueryDispatcher.DispatchAsync<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = rating.BeerId });
 
             return new RatingQuery.Rating
             {

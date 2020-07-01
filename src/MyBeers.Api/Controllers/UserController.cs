@@ -42,11 +42,11 @@ namespace MyBeers.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Authenticate([FromBody]AuthenticateUserQuery authenticateUser)
+        public async Task<IActionResult> Authenticate([FromBody]AuthenticateUserQuery authenticateUser)
         {
             try
             {
-                var user = QueryDispatcher.Dispatch<AuthenticateUserQuery, AuthenticateUserQuery.Authentication>(authenticateUser);
+                var user = await QueryDispatcher.DispatchAsync<AuthenticateUserQuery, AuthenticateUserQuery.Authentication>(authenticateUser);
                 return Ok(user);
             }
             catch (UserException ex)
@@ -57,11 +57,11 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUser([FromQuery]UserQuery query)
+        public async Task<IActionResult> GetUser([FromQuery]UserQuery query)
         {
             try
             {
-                var user = QueryDispatcher.Dispatch<UserQuery, UserQuery.User>(query);
+                var user = await QueryDispatcher.DispatchAsync<UserQuery, UserQuery.User>(query);
                 if (user == null)
                     return BadRequest("User not found");
                 return Ok(user);
@@ -75,11 +75,11 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult AllUsers()
+        public async Task<IActionResult> AllUsers()
         {
             try
             {
-                var users = QueryDispatcher.Dispatch<UsersQuery, IEnumerable<UsersQuery.User>>(new UsersQuery());
+                var users = await QueryDispatcher.DispatchAsync<UsersQuery, IEnumerable<UsersQuery.User>>(new UsersQuery());
                 return Ok(users);
             }
             catch (Exception ex)
@@ -90,11 +90,11 @@ namespace MyBeers.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult AllData([FromQuery]UserAllDataQuery userAllDataQuery)
+        public async Task<IActionResult> AllData([FromQuery]UserAllDataQuery userAllDataQuery)
         {
             try
             {
-                var userData = QueryDispatcher.Dispatch<UserAllDataQuery, UserAllDataQuery.User>(userAllDataQuery);
+                var userData = await QueryDispatcher.DispatchAsync<UserAllDataQuery, UserAllDataQuery.User>(userAllDataQuery);
                 return Ok(userData);
             }
             catch (Exception ex)
