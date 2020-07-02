@@ -28,9 +28,9 @@ namespace MyBeers.Common.MongoSettings
             return _collection.AsQueryable();
         }
 
-        public IEnumerable<TDocument> FilterBy(Expression<Func<TDocument, bool>> filterExpression)
+        public async Task<IEnumerable<TDocument>> FilterByAsync(Expression<Func<TDocument, bool>> filterExpression)
         {
-            return _collection.Find(filterExpression).ToEnumerable();
+            return await _collection.Find(filterExpression).ToListAsync();
         }
 
         public IEnumerable<TProjected> FilterBy<TProjected>(Expression<Func<TDocument, bool>> filterExpression, Expression<Func<TDocument, TProjected>> projectionExpression)

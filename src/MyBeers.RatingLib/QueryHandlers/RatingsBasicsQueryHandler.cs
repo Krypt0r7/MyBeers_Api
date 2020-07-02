@@ -19,7 +19,7 @@ namespace MyBeers.RatingLib.Api.QueryHandlers
 
         public override async Task<IEnumerable<RatingsBasicsQuery.Rating>> HandleAsync(RatingsBasicsQuery query)
         {
-            var ratings = await Task.Run(() => Repository.FilterBy(filter => true));
+            var ratings = await Repository.FilterByAsync(filter => true);
 
             return ratings.Select(x => new RatingsBasicsQuery.Rating
             {

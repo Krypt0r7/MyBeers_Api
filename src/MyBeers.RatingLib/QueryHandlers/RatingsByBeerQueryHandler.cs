@@ -25,7 +25,7 @@ namespace MyBeers.RatingLib.QueryHandlers
             if (beer == null)
                 throw new Exception("Beer not found");
 
-            var ratings = Repository.FilterBy(filter => filter.BeerId == query.BeerId);
+            var ratings = await Repository.FilterByAsync(filter => filter.BeerId == query.BeerId);
 
             return ratings.Select(x => new RatingsByBeerQuery.Rating
             {

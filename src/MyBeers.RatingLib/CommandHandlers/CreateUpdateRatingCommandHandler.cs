@@ -1,4 +1,5 @@
-﻿using MyBeers.BeerLib.Api.Queries;
+﻿using MongoDB.Bson;
+using MyBeers.BeerLib.Api.Queries;
 using MyBeers.Common.Bases;
 using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;
@@ -19,23 +20,27 @@ namespace MyBeers.RatingLib.CommandHandlers
         {
             var beer = await QueryDispatcher.DispatchAsync<BeerQuery, BeerQuery.Beer>(new BeerQuery { Id = command.BeerId });
 
-            var rating = Repository.FilterBy(filter => filter.BeerId == command.BeerId && filter.UserId == command.UserId).FirstOrDefault();
+            var ratingOld = await Repository.FilterByAsync(filter => filter.BeerId == command.BeerId && filter.UserId == command.UserId);
 
-            var newRating = new Domain.Rating
-            {
-                BeerId = beer.Id,
-                AfterTaste = command.AfterTaste,
-                Chugability = command.Chugability,
-                Description = command.Description,
-                Taste = command.Taste,
-                Value = command.Value,
-                FirstImpression = command.FirstImpression,
-                OverallRating = CalculateOverallRating(command.AfterTaste, command.FirstImpression, command.Taste, command.Value),
-                UserId = command.UserId
-            };
+            var rating = ratingOld.FirstOrDefault();
 
             if (rating == null)
+            {
+                var newRating = new Domain.Rating
+                {
+                    BeerId = beer.Id,
+                    AfterTaste = command.AfterTaste,
+                    Chugability = command.Chugability,
+                    Description = command.Description,
+                    Taste = command.Taste,
+                    Value = command.Value,
+                    FirstImpression = command.FirstImpression,
+                    OverallRating = CalculateOverallRating(command.AfterTaste, command.FirstImpression, command.Taste, command.Value),
+                    UserId = command.UserId
+                };
+
                 await Repository.SaveAsync(newRating);
+            }
             else
             {
                 rating.AfterTaste = command.AfterTaste;

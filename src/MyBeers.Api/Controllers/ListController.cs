@@ -6,11 +6,13 @@ using MyBeers.ListLib.Api.Commands;
 using MyBeers.Common.Dispatchers;
 using MyBeers.ListLib.Api.Queries;
 using MyBeers.Api.Base;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyBeers.Api.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class ListController : BaseController
     {
         public ListController(IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher) : base(queryDispatcher, commandDispatcher)

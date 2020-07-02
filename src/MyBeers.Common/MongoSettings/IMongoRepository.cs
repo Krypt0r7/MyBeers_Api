@@ -14,7 +14,7 @@ namespace MyBeers.Common.MongoSettings
 
         Task<TDocument> FindByIdAsync(string id);
 
-        IEnumerable<TDocument> FilterBy(
+        Task<IEnumerable<TDocument>> FilterByAsync(
             Expression<Func<TDocument, bool>> filterExpression);
 
         IEnumerable<TProjected> FilterBy<TProjected>(

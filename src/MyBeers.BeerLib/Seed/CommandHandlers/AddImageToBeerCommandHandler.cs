@@ -18,7 +18,7 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
 
 		public override async Task HandleAsync(AddImageToBeerCommand command)
 		{
-			var beers = Repository.FilterBy(filter => true);
+			var beers = await Repository.FilterByAsync(filter => true);
 			try
 			{
 				await AddImageToBeers(beers);
