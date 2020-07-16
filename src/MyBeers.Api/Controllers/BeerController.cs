@@ -43,6 +43,21 @@ namespace MyBeers.Api.Controllers
 
 		}
 
+		[HttpGet]
+		public async Task<IActionResult> WithLists([FromQuery]BeerWithListsQuery beerWithListsQuery)
+		{
+			try
+			{
+				var beer = await QueryDispatcher.DispatchAsync<BeerWithListsQuery, BeerWithListsQuery.Beer>(beerWithListsQuery);
+				return Ok(beer);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+
+
 
 		[AllowAnonymous]
 		[HttpGet]

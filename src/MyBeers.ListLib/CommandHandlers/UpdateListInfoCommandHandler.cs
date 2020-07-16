@@ -5,6 +5,7 @@ using MyBeers.ListLib.Api.Commands;
 using MyBeers.ListLib.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,6 +26,7 @@ namespace MyBeers.ListLib.CommandHandlers
 
             list.Name = command.Name;
             list.Description = command.Description;
+            list.Collaborators = command.CollaboratorIds.ToList();
 
             await Repository.ReplaceAsync(list);
         }

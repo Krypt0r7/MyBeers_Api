@@ -46,6 +46,7 @@ namespace MyBeers.RatingLib.QueryHandlers
                     Description = rating.Description,
                     FirstImpression = rating.FirstImpression,
                     OverallRating = rating.OverallRating,
+                    Created = rating.Created,
                     Taste = rating.Taste,
                     Value = rating.Value,
                     Id = rating.Id.ToString(),

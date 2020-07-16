@@ -1,6 +1,7 @@
 ﻿using MyBeers.Common.CommonInterfaces;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace MyBeers.ListLib.Api.Queries
@@ -14,7 +15,9 @@ namespace MyBeers.ListLib.Api.Queries
             public string Id { get; set; }
             public string Name { get; set; }
             public string Description { get; set; }
+            public User Owner { get; set; }
             public IEnumerable<Beer> Beers { get; set; }
+            public IEnumerable<User> Collaborators { get; set; }
         }
 
         public class Beer
@@ -29,6 +32,13 @@ namespace MyBeers.ListLib.Api.Queries
             public string City { get; set; }
             public string ImageUrl { get; set; }
             public long SystemetProdId { get; set; }
+        }
+
+        public class User
+        {
+            public string Id { get; set; }
+            public string Username { get; set; }
+            public string AvatarUrl { get; set; }
         }
     }
 }

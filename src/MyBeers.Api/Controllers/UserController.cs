@@ -69,7 +69,7 @@ namespace MyBeers.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
                 
             }
         }
@@ -85,7 +85,7 @@ namespace MyBeers.Api.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -99,7 +99,22 @@ namespace MyBeers.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Usernames([FromQuery]UsernamesQuery usernamesQuery)
+        {
+            try
+            {
+                var usernames = await QueryDispatcher.DispatchAsync<UsernamesQuery, IEnumerable<UsernamesQuery.User>>(usernamesQuery);
+                return Ok(usernames);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);  
             }
         }
 

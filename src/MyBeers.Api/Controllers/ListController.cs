@@ -22,7 +22,7 @@ namespace MyBeers.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> ListsFromUser([FromQuery]ListsByUserIdQuery listsByUserIdQuery)
         { 
-            var lists = await QueryDispatcher.DispatchAsync<ListsByUserIdQuery, IEnumerable<ListsByUserIdQuery.ListByUserId>>(listsByUserIdQuery);
+            var lists = await QueryDispatcher.DispatchAsync<ListsByUserIdQuery, ListsByUserIdQuery.Lists>(listsByUserIdQuery);
             return Ok(lists);
         }
 
@@ -77,6 +77,24 @@ namespace MyBeers.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SetCollaborators([FromBody]UpdateCollaboratorsCommand updateCollaboratorsCommand)
+        {
+            try
+            {
+                await CommandDispatcher.DispatchAsync(updateCollaboratorsCommand);
+                return AcceptedAtAction(nameof(SetCollaborators));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
         [HttpPost]
         public async Task<IActionResult> DeleteList([FromBody]DeleteListCommand deleteListCommand)

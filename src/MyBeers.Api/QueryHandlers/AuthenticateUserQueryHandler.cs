@@ -12,6 +12,7 @@ using MyBeers.UserLib.Domain;
 using MyBeers.Common.Dispatchers;
 using MyBeers.Utilities;
 using Microsoft.Extensions.Options;
+using MyBeers.Api.Exceptions;
 
 namespace MyBeers.Api.QueryHandlers
 {
@@ -27,7 +28,7 @@ namespace MyBeers.Api.QueryHandlers
             var user = await Repository.FindOneAsync(filter => filter.Username.ToLower() == query.Username.ToLower());
             var passwordMatch = VerifyPasswordHash(query.Password, user.PasswordHash, user.PasswordSalt);
             if (!passwordMatch || user == null)
-                throw new Exception("Username or password where incorrect");
+                throw new UserException("Username or password where incorrect");
 
             string token = AuthenticateUser(user.Id.ToString());
 
@@ -49,7 +50,7 @@ namespace MyBeers.Api.QueryHandlers
                 {
                     new Claim(ClaimTypes.Name, id),
                 }),
-                Expires = DateTime.UtcNow.AddDays(3),
+                Expires = DateTime.UtcNow.AddDays(14),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

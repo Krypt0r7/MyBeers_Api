@@ -1,4 +1,5 @@
 ﻿using MyBeers.Common.CommonInterfaces;
+using System;
 using System.Collections.Generic;
 
 namespace MyBeers.RatingLib.Api.Queries
@@ -15,6 +16,7 @@ namespace MyBeers.RatingLib.Api.Queries
             public int Value { get; set; }
             public int FirstImpression { get; set; }
             public string Description { get; set; }
+            public DateTime Created { get; set; }
             public Beer Beer { get; set; }
             public User User { get; set; }
         }

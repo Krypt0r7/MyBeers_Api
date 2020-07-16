@@ -4,6 +4,7 @@ using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;
 using MyBeers.ListLib.Api.Queries;
 using MyBeers.ListLib.Domain;
+using MyBeers.UserLib.Api.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,16 @@ namespace MyBeers.ListLib.QueryHandlers
 
             var beers = await QueryDispatcher.DispatchAsync<BeersByIdsQuery, IEnumerable<BeersByIdsQuery.Beer>>(new BeersByIdsQuery { BeerIds = list.BeerIds });
 
+            var owner = await QueryDispatcher.DispatchAsync<UserQuery, UserQuery.User>(new UserQuery { Id = list.OwnerId });
+
+            List<ListFromIdQuery.User> users = new List<ListFromIdQuery.User>();
+
+            foreach (var id in list.Collaborators)
+            {
+                var user = await QueryDispatcher.DispatchAsync<UserQuery, UserQuery.User>(new UserQuery { Id = id });
+                users.Add(new ListFromIdQuery.User { Id = user.Id, AvatarUrl = user.AvatarUrl, Username = user.Username });
+            }
+
             return new ListFromIdQuery.List
             {
                 Id = list.Id.ToString(),
@@ -39,9 +50,11 @@ namespace MyBeers.ListLib.QueryHandlers
                     State = x.State,
                     Price = x.Price,
                     Country = x.Country,
-                    City = x.City, 
+                    City = x.City,
                     Alcohol = x.Alcohol
-                })
+                }),
+                Collaborators = users,
+                Owner = new ListFromIdQuery.User { Id = owner.Id, AvatarUrl = owner.AvatarUrl, Username = owner.Username }
             };
         }
     }

@@ -11,22 +11,22 @@ using System.Threading.Tasks;
 
 namespace MyBeers.ListLib.QueryHandlers
 {
-    public class ListsByUserIdQueryHandler : BaseQueryHandler<Domain.List, ListsByUserIdQuery, IEnumerable<ListsByUserIdQuery.ListByUserId>>
+    public class ListsByUserIdQueryHandler : BaseQueryHandler<Domain.List, ListsByUserIdQuery, ListsByUserIdQuery.Lists>
     {
         public ListsByUserIdQueryHandler(IMongoRepository<List> repository, IQueryDispatcher queryDispatcher) : base(repository, queryDispatcher)
         {
         }
 
-        public override async Task<IEnumerable<ListsByUserIdQuery.ListByUserId>> HandleAsync(ListsByUserIdQuery query)
+        public override async Task<ListsByUserIdQuery.Lists> HandleAsync(ListsByUserIdQuery query)
         {
-            var lists = await Repository.FilterByAsync(filter => filter.OwnerId == query.UserId);
+            var myLists = await Repository.FilterByAsync(filter => filter.OwnerId == query.UserId);
+            var collabLists = await Repository.FilterByAsync(f => f.Collaborators.Contains(query.UserId));
 
-            return lists.Select(x => new ListsByUserIdQuery.ListByUserId
+            return new ListsByUserIdQuery.Lists
             {
-                Id = x.Id.ToString(),
-                Description = x.Description,
-                Name = x.Name,
-            });
+                MyLists = myLists.Select(x => new ListsByUserIdQuery.List { Description = x.Description, Id = x.Id.ToString(), Name = x.Name}),
+                CollaborateLists = collabLists.Select(x => new ListsByUserIdQuery.List { Description = x.Description, Id = x.Id.ToString(), Name = x.Name})
+            };
 
         }
     }

@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MyBeers.BeerLib.Api\MyBeers.BeerLib.Api.csproj" />
     <ProjectReference Include="..\MyBeers.Common\MyBeers.Common.csproj" />
+    <ProjectReference Include="..\MyBeers.ListLib.Api\MyBeers.ListLib.Api.csproj" />
     <ProjectReference Include="..\MyBeers.RatingLib.Api\MyBeers.RatingLib.Api.csproj" />
     <ProjectReference Include="..\MyBeers.Utilities\MyBeers.Utilities.csproj" />
   </ItemGroup>
