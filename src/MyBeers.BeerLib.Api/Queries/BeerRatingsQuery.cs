@@ -15,7 +15,6 @@ namespace MyBeers.BeerLib.Api.Queries
             public string Id { get; set; }
             public string Name { get; set; }
             public string Producer { get; set; }
-            public double Price { get; set; }
             public string ImageUrl { get; set; }
             public IEnumerable<Rating> Ratings { get; set; }
         }

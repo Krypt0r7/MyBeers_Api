@@ -24,7 +24,6 @@ namespace MyBeers.BeerLib.QueryHandlers
             var lists = await QueryDispatcher.DispatchAsync<ListsFromBeerAndUserQuery, IEnumerable<ListsFromBeerAndUserQuery.List>>(new ListsFromBeerAndUserQuery 
             { 
                 BeerId = query.Id, 
-                UserId = query.UserId 
             });
 
             return new BeerWithListsQuery.Beer
@@ -32,22 +31,13 @@ namespace MyBeers.BeerLib.QueryHandlers
                 Id = beer.Id.ToString(),
                 AlcoholPercentage = beer.AlcoholPercentage,
                 City = beer.City,
-                Volume = beer.Volume,
-                Container = beer.Container,
                 Country = beer.Country,
                 ImageUrl = beer.ImageUrl,
                 Name = beer.Name,
-                Price = beer.Price,
                 Producer = beer.Producer,
-                ProductIdSystemet = beer.ProductIdSystemet,
-                ProductionScale = beer.ProductionScale,
-                RecycleFee = beer.RecycleFee,
                 State = beer.State,
                 Style = beer.Style,
-                Taste = beer.Taste,
                 Type = beer.Type,
-                Usage = beer.Usage,
-                YPK = beer.YPK,
                 Lists = lists.Select(list => new BeerWithListsQuery.List
                 {
                     Id = list.Id,

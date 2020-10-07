@@ -1,5 +1,4 @@
 ﻿using MyBeers.Api.Queries;
-using MyBeers.Common;
 using System;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
@@ -30,7 +29,7 @@ namespace MyBeers.Api.QueryHandlers
             if (!passwordMatch || user == null)
                 throw new UserException("Username or password where incorrect");
 
-            string token = AuthenticateUser(user.Id.ToString());
+            string token = AuthenticateUser(user.Id.ToString(), user.Role);
 
             return new AuthenticateUserQuery.Authentication
             {
@@ -40,7 +39,7 @@ namespace MyBeers.Api.QueryHandlers
             };
         }
 
-        private string AuthenticateUser(string id)
+        private string AuthenticateUser(string id, string role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -49,6 +48,7 @@ namespace MyBeers.Api.QueryHandlers
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, id),
+                    new Claim(ClaimTypes.Role, role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(14),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

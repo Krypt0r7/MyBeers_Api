@@ -5,10 +5,8 @@ using MyBeers.Common.MongoSettings;
 using MyBeers.ListLib.Api.Queries;
 using MyBeers.ListLib.Domain;
 using MyBeers.UserLib.Api.Queries;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MyBeers.ListLib.QueryHandlers
@@ -46,9 +44,7 @@ namespace MyBeers.ListLib.QueryHandlers
                     Name = x.Name,
                     Producer = x.Producer,
                     ImageUrl = x.ImageUrl,
-                    SystemetProdId = x.SystemetProdId,
                     State = x.State,
-                    Price = x.Price,
                     Country = x.Country,
                     City = x.City,
                     Alcohol = x.Alcohol

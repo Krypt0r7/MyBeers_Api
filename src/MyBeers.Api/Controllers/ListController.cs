@@ -41,7 +41,7 @@ namespace MyBeers.Api.Controllers
             try
             {
                 await CommandDispatcher.DispatchAsync(createListCommand);
-                return CreatedAtAction(nameof(CreateList), new { userId = createListCommand.UserId, listName = createListCommand.Name, version = 1 }, null);
+                return CreatedAtAction(nameof(CreateList), new { userId = HttpContext.User.Identity.Name, listName = createListCommand.Name, version = 1 }, null);
             }
             catch (Exception ex)
             {

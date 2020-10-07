@@ -1,6 +1,7 @@
 ﻿using MyBeers.Common.Bases;
 using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;
+using MyBeers.Common.Services;
 using MyBeers.UserLib.Api.Commands;
 using MyBeers.UserLib.Domain;
 using MyBeers.UserLib.Helpers;
@@ -24,7 +25,7 @@ namespace MyBeers.UserLib.CommandHandlers
             byte[] passwordHash, passwordSalt;
             PasswordHelpers.CreatePasswordHash(command.Password, out passwordHash, out passwordSalt);
 
-            var user = new User { Email = command.Email, Username = command.Username, PasswordHash = passwordHash, PasswordSalt = passwordSalt, OldId = command.OldId };
+            var user = new User { Email = command.Email, Username = command.Username, PasswordHash = passwordHash, PasswordSalt = passwordSalt, OldId = command.OldId, Role = Roles.User };
             await Repository.SaveAsync(user);
         }
     }

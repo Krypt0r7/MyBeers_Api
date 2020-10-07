@@ -10,40 +10,46 @@ namespace MyBeers.BeerLib.Api.Commands
     {
         public string Name { get; set; }
         public string Producer { get; set;  }
-        public string Container { get; set; }
-        public double RecycleFee { get; set; }
+        public List<Container> Containers { get; set; }
         public double AlcoholPercentage { get; set; }
-        public double Volume { get; set; }
-        public double Price { get; set; }
-        public double YPK { get; set; }
         public string Country { get; set; }
         public string State { get; set; }
         public string City { get; set; }
         public string Type { get; set; }
         public string Style { get; set; }
-        public string ProductionScale { get; set; }
         public string Usage { get; set; }
         public string Taste { get; set; }
-        public long ProductIdSystemet { get; set; }
         public SystemetInformationModel SystemetInformationModel { get; set; }
         public DateTime SellStartSystemet { get; set; }
         public string ImageUrl { get; set; }
+        public class Container
+        {
+            public string Type { get; set; }
+            public double Volume { get; set; }
+            public double Price { get; set; }
+            public double RecycleFee { get; set; }
+            public string ProductionScale { get; set; }
+            public double YPK { get; set; }
+            public int ProductIdSystemet { get; set; }
+        }
     }
+
+
 
     public class SystemetInformationModel
     {
-        public long ProductId { get; set; }
-        public long ProductNumber { get; set; }
+        public int ProductId { get; set; }
+        public int ProductNumber { get; set; }
         public string ProductNameBold { get; set; }
         public string ProductNameThin { get; set; }
         public string Category { get; set; }
-        public long ProductNumberShort { get; set; }
+        public int ProductNumberShort { get; set; }
         public string ProducerName { get; set; }
         public string SupplierName { get; set; }
         public bool IsKosher { get; set; }
         public string BottleTextShort { get; set; }
         public string Seal { get; set; }
-        public long RestrictedParcelQuantity { get; set; }
+        public int RestrictedParcelQuantity { get; set; }
         public bool IsOrganic { get; set; }
         public bool IsEthical { get; set; }
         public string EthicalLabel { get; set; }

@@ -5,6 +5,7 @@ using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -35,7 +36,7 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
 			{
 				if (beer.ImageUrl == null)
 				{
-					string imageUrl = BuildUrl((int)beer.ProductIdSystemet);
+					string imageUrl = BuildUrl(beer.Containers.First().ProductIdFromSystmet);
 					if (imageUrl != null)
 					{
 						Console.WriteLine(imageUrl);

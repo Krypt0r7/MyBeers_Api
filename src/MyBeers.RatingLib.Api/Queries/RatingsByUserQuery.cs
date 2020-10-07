@@ -7,8 +7,6 @@ namespace MyBeers.RatingLib.Api.Queries
 {
     public class RatingsByUserQuery : IQuery<IEnumerable<RatingsByUserQuery.Rating>>
     {
-        public string UserId { get; set; }
-
         public class Rating
         {
             public string Id { get; set; }

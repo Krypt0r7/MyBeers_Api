@@ -29,7 +29,6 @@ namespace MyBeers.BeerLib.QueryHandlers
             {
                 Id = beer.Id.ToString(),
                 Name = beer.Name,
-                Price = beer.Price,
                 Producer = beer.Producer,
                 ImageUrl = beer.ImageUrl,
                 Ratings = orderedRatings.Select(x => new BeerRatingsQuery.Rating

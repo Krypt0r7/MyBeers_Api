@@ -4,12 +4,10 @@ using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;
 using MyBeers.Migration.Api.Commands;
 using MyBeers.RatingLib.Api.Commands;
+using MyBeers.UserLib;
 using MyBeers.UserLib.Api.Commands;
 using MyBeers.UserLib.Api.Queries;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MyBeers.Migration.CommandHandlers
@@ -34,7 +32,14 @@ namespace MyBeers.Migration.CommandHandlers
 
                 foreach (var user in users)
                 {
-                    await CommandDispatcher.DispatchAsync(new CreateUserCommand(user.Username, "new-password", user.Email, user.Id));
+                    await CommandDispatcher.DispatchAsync(new CreateUserCommand
+                    {
+                        Email = user.Email,
+                        Username = user.Username,
+                        OldId = user.Id,
+                        Password = "new-password",
+                        Role = Roles.User
+                    });
 
                 }
             }
@@ -45,17 +50,18 @@ namespace MyBeers.Migration.CommandHandlers
                 foreach (var rating in ratings)
                 {
                     var oldBeer = beers.First(x => x.Id == rating.BeerId);
-                    var beer = await Repository.FindOneAsync(filter => filter.ProductIdSystemet == oldBeer.BeerData.ProductId);
+                    var beer = await Repository.FindOneAsync(filter => filter.Containers.First().ProductIdFromSystmet == oldBeer.BeerData.ProductId);
                     var user = await QueryDispatcher.DispatchAsync<UserByOldIdQuery, UserByOldIdQuery.User>(new UserByOldIdQuery { OldId = rating.UserId });
-                    await CommandDispatcher.DispatchAsync(new CreateUpdateRatingCommand(
-                        rating.Taste, 
-                        rating.AfterTaste, 
-                        rating.Chugability, 
-                        rating.Value, 
-                        rating.FirstImpression, 
-                        rating.Description, 
-                        beer.Id.ToString(), 
-                        user.Id));
+                    await CommandDispatcher.DispatchAsync(new CreateUpdateRatingCommand
+                    {
+                        AfterTaste = rating.AfterTaste,
+                        BeerId = beer.Id.ToString(),
+                        Chugability = rating.Chugability,
+                        Description = rating.Description,
+                        FirstImpression = rating.FirstImpression,
+                        Taste = rating.Taste,
+                        Value = rating.Value
+                    });
                 }
 
             }

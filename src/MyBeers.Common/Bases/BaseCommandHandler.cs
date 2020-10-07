@@ -1,10 +1,6 @@
-﻿using MongoDB.Driver;
-using MyBeers.Common.CommonInterfaces;
+﻿using MyBeers.Common.CommonInterfaces;
 using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MyBeers.Common.Bases

@@ -33,14 +33,16 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                var systemetObjects = JsonConvert.DeserializeObject<IEnumerable<SystemetInformation>>(data);
+                var systemetObjects = JsonConvert.DeserializeObject<IEnumerable<SystemetInformationModel>>(data);
                 var onlyBeers = systemetObjects.Where(x => x.Category == "Öl");
 
-                foreach (var beer in onlyBeers)
-                {
-                    await CommandDispatcher.DispatchAsync(CreateBeer(beer));
-                }
+                var beerCommands = CreateBeer(onlyBeers);
 
+                foreach (var beerCom in beerCommands)
+                {
+                    await CommandDispatcher.DispatchAsync(beerCom);
+                }
+                
             }
             else
             {
@@ -49,58 +51,104 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
         }
 
 
-        private CreateBeerCommand CreateBeer(SystemetInformation model)
+        private List<CreateBeerCommand> CreateBeer(IEnumerable<SystemetInformationModel> singleBeers)
         {
-            string name = "";
-            if (model.ProducerName != null && model.ProducerName.Contains(model.ProductNameBold))
-            {
-
-                if (model.ProductNameThin == null)
-                    name = model.ProductNameBold;
-                else
-                    name = model.ProductNameThin;
-
-            }
-            else
-            {
-                name = model.ProductNameBold + " " + model.ProductNameThin;
-            }
-
-            double ypk = Math.Round(model.Volume * model.AlcoholPercentage / 40 / model.Price, 3);
-
-
-            var beerCommand = new CreateBeerCommand
-            {
-                Volume = model.Volume,
-                Style = model.Style,
-                Name = name,
-                Producer = model.ProducerName,
-                Container = model.BottleTextShort,
-                RecycleFee = model.RecycleFee,
-                AlcoholPercentage = model.AlcoholPercentage,
-                Price = model.Price,
-                YPK = ypk,
-                Country = model.Country,
-                State = model.OriginLevel1,
-                City = model.OriginLevel2,
-                Type = model.Type,
-                ProductionScale = model.AssortmentText,
-                Usage = model.Usage,
-                Taste = model.Taste,
-                ProductIdSystemet = model.ProductId,
-                SystemetInformationModel = new SystemetInformationModel
+            var groupedBeers = singleBeers.GroupBy(x => x.ProductNumberShort);
+            var beers = new List<CreateBeerCommand>();
+            foreach (var group in groupedBeers)
+            {   
+                var containerList = new List<CreateBeerCommand.Container>();
+                foreach (var beer in group)
                 {
-                    AlcoholPercentage = model.AlcoholPercentage,
-                    Assortment = model.Assortment,
-                    AssortmentText = model.AssortmentText,
-                    BeverageDescriptionShort = model.BeverageDescriptionShort
-                },
-                SellStartSystemet = model.SellStartDate,
-                ImageUrl = null
-            };
+                    var container = new CreateBeerCommand.Container();
+                    container.YPK = Math.Round(beer.Volume * beer.AlcoholPercentage / 40 / beer.Price, 3);
+                    container.Price = beer.Price;
+                    container.ProductionScale = beer.AssortmentText;
+                    container.RecycleFee = beer.RecycleFee;
+                    container.Type = beer.BottleTextShort;
+                    container.Volume = beer.Volume;
+                    container.ProductIdSystemet = beer.ProductId;
 
-            return beerCommand;
+                    containerList.Add(container);
+                }
+                
+                var singleBeer = group.First();
 
+                string name = "";
+                if (singleBeer.ProducerName != null && singleBeer.ProducerName.Contains(singleBeer.ProductNameBold))
+                {
+
+                    if (singleBeer.ProductNameThin == null)
+                        name = singleBeer.ProductNameBold;
+                    else
+                        name = singleBeer.ProductNameThin;
+
+                }
+                else
+                {
+                    name = singleBeer.ProductNameBold + " " + singleBeer.ProductNameThin;
+                }
+                
+                beers.Add(new CreateBeerCommand
+                {
+                    Style = singleBeer.Style,
+                    Name = name,
+                    Producer = singleBeer.ProducerName,
+                    Containers = containerList,
+                    AlcoholPercentage = singleBeer.AlcoholPercentage,
+                    Country = singleBeer.Country,
+                    State = singleBeer.OriginLevel1,
+                    City = singleBeer.OriginLevel2,
+                    Type = singleBeer.Type,
+                    Usage = singleBeer.Usage,
+                    Taste = singleBeer.Taste,
+                    SystemetInformationModel = new SystemetInformationModel
+                    {
+                        BeverageDescriptionShort = singleBeer.BeverageDescriptionShort,
+                        AssortmentText = singleBeer.AssortmentText,
+                        Assortment = singleBeer.Assortment,
+                        AlcoholPercentage = singleBeer.AlcoholPercentage,
+                        BottleTextShort = singleBeer.BottleTextShort,
+                        Category = singleBeer.Category,
+                        Country = singleBeer.Country,
+                        EthicalLabel = singleBeer.EthicalLabel,
+                        IsCompletelyOutOfStock = singleBeer.IsCompletelyOutOfStock,
+                        IsEthical = singleBeer.IsEthical,
+                        IsKosher = singleBeer.IsKosher,
+                        IsManufacturingCountry = singleBeer.IsManufacturingCountry,
+                        IsNews = singleBeer.IsNews,
+                        IsOrganic = singleBeer.IsOrganic,
+                        IsRegionalRestricted = singleBeer.IsRegionalRestricted,
+                        IsTemporaryOutOfStock = singleBeer.IsTemporaryOutOfStock,
+                        IsWebLaunch = singleBeer.IsWebLaunch,
+                        OriginLevel1 = singleBeer.OriginLevel1,
+                        OriginLevel2 = singleBeer.OriginLevel2,
+                        Price = singleBeer.Price,
+                        ProducerName = singleBeer.ProducerName,
+                        ProductId = singleBeer.ProductId,
+                        ProductNameBold = singleBeer.ProductNameBold,
+                        ProductNameThin = singleBeer.ProductNameThin,
+                        ProductNumber = singleBeer.ProductNumber,
+                        ProductNumberShort = singleBeer.ProductNumberShort,
+                        RecycleFee = singleBeer.RecycleFee,
+                        RestrictedParcelQuantity = singleBeer.RestrictedParcelQuantity,
+                        Seal = singleBeer.Seal,
+                        SellStartDate = singleBeer.SellStartDate,
+                        Style = singleBeer.Style,
+                        SubCategory = singleBeer.SubCategory,
+                        SupplierName = singleBeer.SupplierName,
+                        Taste = singleBeer.Taste,
+                        Type = singleBeer.Type,
+                        Usage = singleBeer.Usage,
+                        Vintage = singleBeer.Vintage,
+                        Volume  = singleBeer.Volume
+                    },
+                    SellStartSystemet = singleBeer.SellStartDate,
+                    ImageUrl = null
+                });
+                
+            }
+            return beers;
         }
     }
 }

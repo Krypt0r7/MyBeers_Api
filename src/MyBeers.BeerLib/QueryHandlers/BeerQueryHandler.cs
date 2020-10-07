@@ -5,12 +5,13 @@ using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace MyBeers.BeerLib.beerHandlers
 {
-    public class BeerbeerHandler : BaseQueryHandler<Domain.Beer, BeerQuery, BeerQuery.Beer>
+    public class BeerQueryHandler : BaseQueryHandler<Beer, BeerQuery, BeerQuery.Beer>
     {
-        public BeerbeerHandler(IMongoRepository<Beer> repository, IQueryDispatcher queryDispatcher) : base(repository, queryDispatcher)
+        public BeerQueryHandler(IMongoRepository<Beer> repository, IQueryDispatcher queryDispatcher) : base(repository, queryDispatcher)
         {
         }
 
@@ -26,22 +27,48 @@ namespace MyBeers.BeerLib.beerHandlers
                 Id = beer.Id.ToString(),
                 AlcoholPercentage = beer.AlcoholPercentage,
                 City = beer.City,
-                Container = beer.Container,
                 Country = beer.Country,
                 ImageUrl = beer.ImageUrl,
                 Name = beer.Name,
-                Price = beer.Price,
                 Producer = beer.Producer,
-                ProductIdSystemet = beer.ProductIdSystemet,
-                ProductionScale = beer.ProductionScale,
-                RecycleFee = beer.RecycleFee,
                 State = beer.State,
                 Style = beer.Style,
-                Taste = beer.Taste,
                 Type = beer.Type,
-                Usage = beer.Usage,
-                Volume = beer.Volume,
-                YPK = beer.YPK
+                Containers = beer.Containers.Select(c => new BeerQuery.Beer.Container{
+                    Price = c.Price,
+                    ProductIdFromSystemet = c.ProductIdFromSystmet,
+                    ProductionScale = c.ProductionScale,
+                    RecycleFee = c.RecycleFee,
+                    SellStartDate = c.SellStartDate,
+                    Type = c.Type,
+                    Volume = c.Volume,
+                    Ypk = c.Ypk
+                }),
+                MoreInformationModel = new BeerQuery.Beer.MoreInformation{
+                    BeverageDescriptionShort = beer.MoreInformation.BeverageDescriptionShort,
+                    AssortmentText = beer.MoreInformation.AssortmentText,
+                    Assortment = beer.MoreInformation.Assortment,
+                    AlcoholPercentage = beer.MoreInformation.AlcoholPercentage,
+                    Category = beer.MoreInformation.Category,
+                    Country = beer.MoreInformation.Country,
+                    IsNews = beer.MoreInformation.IsNews,
+                    IsOrganic = beer.MoreInformation.IsOrganic,
+                    OriginLevel1 = beer.MoreInformation.OriginLevel1,
+                    OriginLevel2 = beer.MoreInformation.OriginLevel2,
+                    ProducerName = beer.MoreInformation.ProducerName,
+                    ProductId = beer.MoreInformation.ProductId,
+                    ProductNameBold = beer.MoreInformation.ProductNameBold,
+                    ProductNameThin = beer.MoreInformation.ProductNameThin,
+                    ProductNumber = beer.MoreInformation.ProductNumber,
+                    ProductNumberShort = beer.MoreInformation.ProductNumberShort,
+                    Style = beer.MoreInformation.Style,
+                    SubCategory = beer.MoreInformation.SubCategory,
+                    SupplierName = beer.MoreInformation.SupplierName,
+                    Taste = beer.MoreInformation.Taste,
+                    Type = beer.MoreInformation.Type,
+                    Usage = beer.MoreInformation.Usage,
+                    Vintage = beer.MoreInformation.Vintage,
+                }
             };
         }
     }

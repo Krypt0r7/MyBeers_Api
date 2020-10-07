@@ -2,11 +2,10 @@
 using MyBeers.Common.Bases;
 using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;
+using MyBeers.Common.Services;
 using MyBeers.RatingLib.Api.Queries;
 using MyBeers.UserLib.Api.Queries;
 using MyBeers.UserLib.Domain;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,15 +14,18 @@ namespace MyBeers.UserLib.QueryHandlers
 {
     public class UserAllDataQueryHandler : BaseQueryHandler<Domain.User, UserAllDataQuery, UserAllDataQuery.User>
     {
-        public UserAllDataQueryHandler(IMongoRepository<User> repository, IQueryDispatcher queryDispatcher) : base(repository, queryDispatcher)
+        private readonly IUserService userService;
+
+        public UserAllDataQueryHandler(IMongoRepository<User> repository, IQueryDispatcher queryDispatcher, IUserService userService) : base(repository, queryDispatcher)
         {
+            this.userService = userService;
         }
 
         public override async Task<UserAllDataQuery.User> HandleAsync(UserAllDataQuery query)
         {
-            var user = await Repository.FindByIdAsync(query.Id);
+            var user = await Repository.FindByIdAsync(userService.GetUserId());
 
-            var ratings = await QueryDispatcher.DispatchAsync<RatingsByUserQuery, IEnumerable<RatingsByUserQuery.Rating>>(new RatingsByUserQuery { UserId = user.Id.ToString() });
+            var ratings = await QueryDispatcher.DispatchAsync<RatingsByUserQuery, IEnumerable<RatingsByUserQuery.Rating>>(new RatingsByUserQuery());
 
             return new UserAllDataQuery.User
             {
@@ -52,9 +54,7 @@ namespace MyBeers.UserLib.QueryHandlers
                 Id = beer.Id,
                 Alcohol = beer.AlcoholPercentage,
                 Name = beer.Name,
-                Price = beer.Price,
                 Producer = beer.Producer,
-                Volume = beer.Volume
             };
         }
     }

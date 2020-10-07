@@ -5,8 +5,6 @@ namespace MyBeers.ListLib.Api.Queries
 {
     public class ListsByUserIdQuery : IQuery<ListsByUserIdQuery.Lists>
     {
-        public string UserId { get; set; }
-
         public class Lists
         {
             public IEnumerable<List> MyLists { get; set; }

@@ -7,7 +7,6 @@ namespace MyBeers.UserLib.Api.Queries
 {
     public class UserAllDataQuery : IQuery<UserAllDataQuery.User>
     {
-        public string Id { get; set; }
         public class User
         {
             public string Id { get; set; }

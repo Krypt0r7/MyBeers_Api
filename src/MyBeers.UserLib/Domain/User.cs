@@ -1,7 +1,4 @@
 ﻿using MyBeers.Common.MongoSettings;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MyBeers.UserLib.Domain
 {
@@ -12,6 +9,7 @@ namespace MyBeers.UserLib.Domain
         public string Email { get; set; }
         public string AvatarUrl { get; set; }
         public string OldId { get; set; }
+        public string Role { get; set; } = Roles.User;
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
     }

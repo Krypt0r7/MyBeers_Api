@@ -5,6 +5,8 @@ using MyBeers.Common.MongoSettings;
 using System.Threading.Tasks;
 using System;
 using MyBeers.BeerLib.Api.Commands;
+using System.Linq;
+
 
 namespace MyBeers.BeerLib.Seed.CommandHandlers
 {
@@ -16,62 +18,51 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
 
         public override async Task HandleAsync(CreateBeerCommand command)
         {
-            var beer = await Repository.FindOneAsync(filter => filter.ProductIdSystemet == command.ProductIdSystemet);
+            var productIds = command.Containers.Select(x => x.ProductIdSystemet).ToList();
+            var beer = await Repository.FilterByAsync(filter => productIds.Contains(filter.MoreInformation.ProductId));
 
-            if (beer != null)
+            if (beer.Count() > 0)
                 return;
 
             var newBeer = new Beer
             {
                 AlcoholPercentage = command.AlcoholPercentage,
                 City = command.City,
-                Container = command.Container,
+                Containers = command.Containers.Select(c => new Container{
+                    Price = c.Price,
+                    ProductionScale = c.ProductionScale,
+                    RecycleFee = c.RecycleFee,
+                    Type = c.Type,
+                    Volume = c.Volume,
+                    Ypk = c.YPK,
+                    ProductIdFromSystmet = c.ProductIdSystemet,
+                    SellStartDate = command.SellStartSystemet
+                }),
                 Country = command.Country,
                 ImageUrl = command.ImageUrl,
                 Name = command.Name,
-                Price = command.Price,
                 Producer = command.Producer,
-                ProductIdSystemet = command.ProductIdSystemet,
-                ProductionScale = command.ProductionScale,
-                RecycleFee = command.RecycleFee,
                 State = command.State,
                 Style = command.Style,
-                Taste = command.Taste,
                 Type = command.Type,
-                Usage = command.Usage,
-                Volume = command.Volume,
-                SystemetInformation = new SystemetInformation
+                MoreInformation = new MoreInformation
                 {
                     BeverageDescriptionShort = command.SystemetInformationModel.BeverageDescriptionShort,
                     AssortmentText = command.SystemetInformationModel.AssortmentText,
                     Assortment = command.SystemetInformationModel.Assortment,
                     AlcoholPercentage = command.SystemetInformationModel.AlcoholPercentage,
-                    BottleTextShort = command.SystemetInformationModel.BottleTextShort,
                     Category = command.SystemetInformationModel.Category,
                     Country = command.SystemetInformationModel.Country,
-                    EthicalLabel = command.SystemetInformationModel.EthicalLabel,
-                    IsCompletelyOutOfStock = command.SystemetInformationModel.IsCompletelyOutOfStock,
-                    IsEthical = command.SystemetInformationModel.IsEthical,
-                    IsKosher = command.SystemetInformationModel.IsKosher,
-                    IsManufacturingCountry = command.SystemetInformationModel.IsManufacturingCountry,
                     IsNews = command.SystemetInformationModel.IsNews,
                     IsOrganic = command.SystemetInformationModel.IsOrganic,
-                    IsRegionalRestricted = command.SystemetInformationModel.IsRegionalRestricted,
-                    IsTemporaryOutOfStock = command.SystemetInformationModel.IsTemporaryOutOfStock,
-                    IsWebLaunch = command.SystemetInformationModel.IsWebLaunch,
                     OriginLevel1 = command.SystemetInformationModel.OriginLevel1,
                     OriginLevel2 = command.SystemetInformationModel.OriginLevel2,
-                    Price = command.SystemetInformationModel.Price,
                     ProducerName = command.SystemetInformationModel.ProducerName,
                     ProductId = command.SystemetInformationModel.ProductId,
                     ProductNameBold = command.SystemetInformationModel.ProductNameBold,
                     ProductNameThin = command.SystemetInformationModel.ProductNameThin,
                     ProductNumber = command.SystemetInformationModel.ProductNumber,
                     ProductNumberShort = command.SystemetInformationModel.ProductNumberShort,
-                    RecycleFee = command.SystemetInformationModel.RecycleFee,
-                    RestrictedParcelQuantity = command.SystemetInformationModel.RestrictedParcelQuantity,
-                    Seal = command.SystemetInformationModel.Seal,
-                    SellStartDate = command.SystemetInformationModel.SellStartDate,
                     Style = command.SystemetInformationModel.Style,
                     SubCategory = command.SystemetInformationModel.SubCategory,
                     SupplierName = command.SystemetInformationModel.SupplierName,
@@ -79,10 +70,7 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
                     Type = command.SystemetInformationModel.Type,
                     Usage = command.SystemetInformationModel.Usage,
                     Vintage = command.SystemetInformationModel.Vintage,
-                    Volume  = command.SystemetInformationModel.Volume
                 },
-                YPK = command.YPK,
-                SellStartDate = command.SellStartSystemet
             };
 
             await Repository.SaveAsync(newBeer);

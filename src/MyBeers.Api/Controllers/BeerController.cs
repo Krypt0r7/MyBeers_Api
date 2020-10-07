@@ -7,6 +7,7 @@ using MyBeers.Api.Base;
 using MyBeers.BeerLib.Api.Queries;
 using MyBeers.BeerLib.Api.Commands;
 using MyBeers.Common.Dispatchers;
+using Amazon.S3.Model.Internal.MarshallTransformations;
 
 namespace MyBeers.Api.Controllers
 {
@@ -118,6 +119,20 @@ namespace MyBeers.Api.Controllers
 				return BadRequest();
 			}
 		}
+
+		[HttpPost]
+		public async Task<IActionResult> ChangeRequest(AddProposalCommand addProposalCommand)
+        {
+            try
+            {
+				await CommandDispatcher.DispatchAsync(addProposalCommand);
+				return AcceptedAtAction(nameof(ChangeRequest));
+            }
+            catch (Exception ex)
+            {
+				return BadRequest(ex.Message);
+            }
+        }
 
 
 		//[HttpPost]

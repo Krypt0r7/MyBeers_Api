@@ -62,7 +62,6 @@ namespace MyBeers.BeerLib.QueryHandlers
                     Id = x.Key.Id.ToString(),
                     ImageUrl = x.Key.ImageUrl,
                     Name = x.Key.Name,
-                    Price = x.Key.Price,
                     Producer = x.Key.Producer,
                     State = x.Key.State,
                     Type = x.Key.Type
@@ -76,7 +75,6 @@ namespace MyBeers.BeerLib.QueryHandlers
                     Id = x.Key.Id.ToString(),
                     ImageUrl = x.Key.ImageUrl,
                     Name = x.Key.Name,
-                    Price = x.Key.Price,
                     Producer = x.Key.Producer,
                     State = x.Key.State,
                     Type = x.Key.Type

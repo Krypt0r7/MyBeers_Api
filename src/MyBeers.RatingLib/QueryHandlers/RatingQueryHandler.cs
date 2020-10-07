@@ -42,9 +42,7 @@ namespace MyBeers.RatingLib.QueryHandlers
                     Id = beer.Id,
                     Alcohol = beer.AlcoholPercentage,
                     Name = beer.Name,
-                    Price = beer.Price,
                     Producer = beer.Producer,
-                    Volume = beer.Volume
                 }
             };
         }

@@ -6,6 +6,7 @@ using ImageMagick;
 using MyBeers.Common.Bases;
 using MyBeers.Common.Dispatchers;
 using MyBeers.Common.MongoSettings;
+using MyBeers.Common.Services;
 using MyBeers.UserLib.Api.Commands;
 using MyBeers.UserLib.Domain;
 using System;
@@ -17,14 +18,17 @@ namespace MyBeers.UserLib.CommandHandlers
     public class UpdateAvatarImageCommandHandler : BaseCommandHandler<UpdateAvatarImageCommand, Domain.User>
     {
         private readonly IAmazonS3 _s3client;
-        public UpdateAvatarImageCommandHandler(IMongoRepository<User> repository, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IAmazonS3 amazonS3) : base(repository, queryDispatcher, commandDispatcher)
+        private readonly IUserService userService;
+
+        public UpdateAvatarImageCommandHandler(IMongoRepository<User> repository, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IAmazonS3 amazonS3, IUserService userService) : base(repository, queryDispatcher, commandDispatcher)
         {
             _s3client = amazonS3;
+            this.userService = userService;
         }
 
         public override async Task HandleAsync(UpdateAvatarImageCommand command)
         {
-            var user = await Repository.FindByIdAsync(command.Id);
+            var user = await Repository.FindByIdAsync(userService.GetUserId());
 
             var imageDataByteArray = Convert.FromBase64String(command.ImageData);
             string bucketName = "mybeers-avatars";

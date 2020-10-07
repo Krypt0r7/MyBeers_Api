@@ -26,6 +26,7 @@ using MyBeers.UserLib.Api.Queries;
 using MyBeers.Migration.CommandHandlers;
 using MyBeers.BeerLib.Seed.CommandHandlers;
 using Microsoft.Extensions.Hosting;
+using MyBeers.Common.Services;
 
 namespace MyBeers.Api
 {
@@ -74,6 +75,7 @@ namespace MyBeers.Api
             services.AddRouting(opt => opt.LowercaseUrls = true);
 
             services.AddHttpContextAccessor();
+            services.AddSingleton<IUserService, UserService>();
 
             services.AddSwaggerGen(x =>
             {

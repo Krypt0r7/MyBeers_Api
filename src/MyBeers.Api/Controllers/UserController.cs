@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyBeers.Api.Base;
 using MyBeers.Api.Exceptions;
@@ -10,7 +9,6 @@ using MyBeers.Api.Queries;
 using MyBeers.Common.Dispatchers;
 using MyBeers.UserLib.Api.Commands;
 using MyBeers.UserLib.Api.Queries;
-using MyBeers.UserLib.Domain;
 
 namespace MyBeers.Api.Controllers
 {
@@ -117,49 +115,6 @@ namespace MyBeers.Api.Controllers
                 return BadRequest(ex.Message);  
             }
         }
-
-
-
-        //[HttpGet("by-name")]
-        //public async Task<IActionResult> ByUserName(string userName)
-        //{
-        //    var user = await _userService.GetByUserName(userName);
-
-        //    if (user == null)
-        //        return BadRequest("Username not found");
-
-        //    var ratings = await _ratingService.GetRatingsByUserId(user.Id);
-
-        //    var userDto = new UserFullDataDto
-        //    {
-        //        Id = user.Id,
-        //        AvatarUrl = user.AvatarUrl,
-        //        Email = user.Email,
-        //        Username = user.Username,
-        //        Ratings = new List<RatingBeerDto>(),
-        //        BestRatedBeer = await _beerService.GetTopOrBottomRatedBeerAsync(user.Id, true),
-        //        WorstRatedBeer = await _beerService.GetTopOrBottomRatedBeerAsync(user.Id, false)
-        //    };
-
-        //    foreach (var rating in ratings)
-        //    {
-        //        var ratingDto = new RatingBeerDto
-        //        {
-        //            AfterTaste = rating.AfterTaste,
-        //            Chugability = rating.Chugability,
-        //            CreatedTime = rating.CreatedTime,
-        //            Description = rating.Description,
-        //            FirstImpression = rating.FirstImpression,
-        //            OverallRating = rating.OverallRating,
-        //            Taste = rating.Taste,
-        //            Value = rating.Value,
-        //            Beer = _mapper.Map<BeerDto>(await _beerService.GetBeerByIdAsync(rating.BeerId))
-        //        };
-        //        userDto.Ratings.Add(ratingDto);
-        //    };
-
-        //    return Ok(userDto);
-        //}
 
         [HttpPost]
         public async Task<IActionResult> UpdatePassword([FromBody]UpdatePasswordCommand updatePasswordCommand)

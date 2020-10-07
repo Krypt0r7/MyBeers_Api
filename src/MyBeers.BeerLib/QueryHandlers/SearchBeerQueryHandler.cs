@@ -28,13 +28,17 @@ namespace MyBeers.BeerLib.QueryHandlers
                 Country = x.Country,
                 Id = x.Id.ToString(),
                 Name = x.Name,
-                Container = x.Container,
-                Price = x.Price,
                 Producer = x.Producer,
                 State = x.State,
                 ImageUrl = x.ImageUrl,
                 Type = x.Type,
-                ProdIdSystemet = (int)x.ProductIdSystemet
+                Containers = x.Containers.Select(c => new SearchBeerQuery.Container
+                {
+                    Ypk = c.Ypk, 
+                    Volume = c.Volume,
+                    Type = c.Type,
+                    Price = c.Price
+                })
             });
         }
     }

@@ -23,18 +23,23 @@ namespace MyBeers.BeerLib.QueryHandlers
                 beers.Add(await Repository.FindByIdAsync(item));
             }
            
-            return beers.Select(x => new BeersByIdsQuery.Beer 
+            return beers.Select(b => new BeersByIdsQuery.Beer 
             { 
-                Id = x.Id.ToString(), 
-                Alcohol = x.AlcoholPercentage, 
-                City = x.City, 
-                Country = x.Country, 
-                Name = x.Name, 
-                Price = x.Price, 
-                Producer = x.Producer, 
-                State = x.State,
-                ImageUrl = x.ImageUrl,
-                SystemetProdId = x.ProductIdSystemet
+                Id = b.Id.ToString(), 
+                Alcohol = b.AlcoholPercentage, 
+                City = b.City, 
+                Country = b.Country, 
+                Name = b.Name, 
+                Producer = b.Producer, 
+                State = b.State,
+                ImageUrl = b.ImageUrl,
+                Containers = b.Containers.Select(c => new BeersByIdsQuery.Container
+                {
+                    Price = c.Price,
+                    Type = c.Type,
+                    Volume = c.Volume,
+                    Ypk = c.Ypk
+                })
             });
         }
 
