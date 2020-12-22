@@ -36,7 +36,7 @@ namespace MyBeers.BeerLib.QueryHandlers
                 Containers = b.Containers.Select(c => new BeersByIdsQuery.Container
                 {
                     Price = c.Price,
-                    Type = c.Type,
+                    Type = c.Type.ToString(),
                     Volume = c.Volume,
                     Ypk = c.Ypk
                 })

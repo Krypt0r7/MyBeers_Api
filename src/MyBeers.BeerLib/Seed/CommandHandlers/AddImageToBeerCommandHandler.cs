@@ -40,7 +40,7 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
 					if (imageUrl != null)
 					{
 						Console.WriteLine(imageUrl);
-						beer.ImageUrl = imageUrl;
+						//beer.ImageUrl = imageUrl;
 						await Repository.ReplaceAsync(beer);
 					}
 					

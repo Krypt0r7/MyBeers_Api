@@ -30,7 +30,9 @@ namespace MyBeers.UserLib.CommandHandlers
         {
             var user = await Repository.FindByIdAsync(userService.GetUserId());
 
-            var imageDataByteArray = Convert.FromBase64String(command.ImageData);
+            var imageData = command.ImageData.Remove(0, command.ImageData.IndexOf(',') + 1);
+
+            var imageDataByteArray = Convert.FromBase64String(imageData);
             string bucketName = "mybeers-avatars";
 
             try

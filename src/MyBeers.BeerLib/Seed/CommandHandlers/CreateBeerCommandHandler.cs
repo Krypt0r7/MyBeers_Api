@@ -10,9 +10,9 @@ using System.Linq;
 
 namespace MyBeers.BeerLib.Seed.CommandHandlers
 {
-    public class CreateBeerCommandHandler : BaseCommandHandler<CreateBeerCommand, Domain.Beer>
+    public class CreateBeerCommandHandler : BaseCommandHandler<CreateBeerCommand, Domain.OldBeer>
     {
-        public CreateBeerCommandHandler(IMongoRepository<Beer> repository, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher) : base(repository, queryDispatcher, commandDispatcher)
+        public CreateBeerCommandHandler(IMongoRepository<OldBeer> repository, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher) : base(repository, queryDispatcher, commandDispatcher)
         {
         }
 
@@ -24,11 +24,12 @@ namespace MyBeers.BeerLib.Seed.CommandHandlers
             if (beer.Count() > 0)
                 return;
 
-            var newBeer = new Beer
+            var newBeer = new OldBeer
             {
                 AlcoholPercentage = command.AlcoholPercentage,
                 City = command.City,
-                Containers = command.Containers.Select(c => new Container{
+                Containers = command.Containers.Select(c => new OdlContainer
+                {
                     Price = c.Price,
                     ProductionScale = c.ProductionScale,
                     RecycleFee = c.RecycleFee,

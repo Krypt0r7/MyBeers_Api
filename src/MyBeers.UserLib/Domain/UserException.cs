@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace MyBeers.Api.Exceptions
+namespace MyBeers.UserLib.Domain
 {
     public class UserException : Exception
     {

@@ -9,7 +9,7 @@ namespace MyBeers.UserLib.Domain
         public string Email { get; set; }
         public string AvatarUrl { get; set; }
         public string OldId { get; set; }
-        public string Role { get; set; } = Roles.User;
+        public string Role { get; set; } = UserLib.Role.User;
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
     }

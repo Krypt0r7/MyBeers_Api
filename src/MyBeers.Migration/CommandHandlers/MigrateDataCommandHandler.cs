@@ -38,7 +38,7 @@ namespace MyBeers.Migration.CommandHandlers
                         Username = user.Username,
                         OldId = user.Id,
                         Password = "new-password",
-                        Role = Roles.User
+                        Role = Role.User
                     });
 
                 }

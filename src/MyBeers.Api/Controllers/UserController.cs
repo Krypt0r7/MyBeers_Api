@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyBeers.Api.Base;
-using MyBeers.Api.Exceptions;
 using MyBeers.Api.Queries;
 using MyBeers.Common.Dispatchers;
+using MyBeers.UserLib;
 using MyBeers.UserLib.Api.Commands;
 using MyBeers.UserLib.Api.Queries;
+using MyBeers.UserLib.Domain;
 
 namespace MyBeers.Api.Controllers
 {
@@ -160,6 +161,22 @@ namespace MyBeers.Api.Controllers
             }
           
         }
+
+        [Authorize(Roles = Role.Admin)]
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser([FromBody] DeleteUserCommand deleteUserCommand)
+        {
+            try
+            {
+                await CommandDispatcher.DispatchAsync(deleteUserCommand);
+                return AcceptedAtAction(nameof(DeleteUser), new { user = deleteUserCommand.Id, status = "success" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
     }
 }

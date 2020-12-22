@@ -11,7 +11,6 @@ using MyBeers.UserLib.Domain;
 using MyBeers.Common.Dispatchers;
 using MyBeers.Utilities;
 using Microsoft.Extensions.Options;
-using MyBeers.Api.Exceptions;
 
 namespace MyBeers.Api.QueryHandlers
 {
@@ -25,8 +24,13 @@ namespace MyBeers.Api.QueryHandlers
         public override async Task<AuthenticateUserQuery.Authentication> HandleAsync(AuthenticateUserQuery query)
         {
             var user = await Repository.FindOneAsync(filter => filter.Username.ToLower() == query.Username.ToLower());
+            if (user == null)
+            {
+                throw new UserException("Username or password where incorrect");
+            }
+
             var passwordMatch = VerifyPasswordHash(query.Password, user.PasswordHash, user.PasswordSalt);
-            if (!passwordMatch || user == null)
+            if (!passwordMatch)
                 throw new UserException("Username or password where incorrect");
 
             string token = AuthenticateUser(user.Id.ToString(), user.Role);

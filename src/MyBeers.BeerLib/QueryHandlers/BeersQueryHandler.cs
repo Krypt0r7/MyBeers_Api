@@ -6,23 +6,21 @@ using MyBeers.Common.MongoSettings;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace MyBeers.BeerLib.beerHandlers
 {
-    public class BeerQueryHandler : BaseQueryHandler<Beer, BeerQuery, BeerQuery.Beer>
+    public class BeersQueryHandler : BaseQueryHandler<Beer, BeersQuery, IEnumerable<BeersQuery.Beer>>
     {
-        public BeerQueryHandler(IMongoRepository<Beer> repository, IQueryDispatcher queryDispatcher) : base(repository, queryDispatcher)
+        public BeersQueryHandler(IMongoRepository<Beer> repository, IQueryDispatcher queryDispatcher) : base(repository, queryDispatcher)
         {
         }
 
-        public override async Task<BeerQuery.Beer> HandleAsync(BeerQuery query)
+        public override async Task<IEnumerable<BeersQuery.Beer>> HandleAsync(BeersQuery query)
         {
-            var beer = await Repository.FindByIdAsync(query.Id);
+            var beers = Repository.AsQueryable();
 
-            if (beer == null)
-                throw new Exception("Beer not found");
-
-            return new BeerQuery.Beer
+            return beers.Select(beer => new BeersQuery.Beer
             {
                 Id = beer.Id.ToString(),
                 AlcoholPercentage = beer.AlcoholPercentage,
@@ -34,7 +32,8 @@ namespace MyBeers.BeerLib.beerHandlers
                 State = beer.State,
                 Style = beer.Style,
                 Type = beer.Type,
-                Containers = beer.Containers.Select(c => new BeerQuery.Beer.Container{
+                Containers = beer.Containers.Select(c => new BeersQuery.Beer.Container
+                {
                     Price = c.Price,
                     ProductIdFromSystemet = c.ProductIdFromSystmet,
                     RecycleFee = c.RecycleFee,
@@ -43,7 +42,7 @@ namespace MyBeers.BeerLib.beerHandlers
                     Volume = c.Volume,
                     Ypk = c.Ypk
                 })
-            };
+            });
         }
     }
 }

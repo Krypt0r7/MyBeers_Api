@@ -25,7 +25,7 @@ namespace MyBeers.UserLib.CommandHandlers
             byte[] passwordHash, passwordSalt;
             PasswordHelpers.CreatePasswordHash(command.Password, out passwordHash, out passwordSalt);
 
-            var user = new User { Email = command.Email, Username = command.Username, PasswordHash = passwordHash, PasswordSalt = passwordSalt, OldId = command.OldId, Role = Roles.User };
+            var user = new User { Email = command.Email, Username = command.Username, PasswordHash = passwordHash, PasswordSalt = passwordSalt, OldId = command.OldId, Role = Role.User };
             await Repository.SaveAsync(user);
         }
     }

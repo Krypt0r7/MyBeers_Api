@@ -8,6 +8,7 @@ using MyBeers.BeerLib.Api.Queries;
 using MyBeers.BeerLib.Api.Commands;
 using MyBeers.Common.Dispatchers;
 using Amazon.S3.Model.Internal.MarshallTransformations;
+using MyBeers.UserLib;
 
 namespace MyBeers.Api.Controllers
 {
@@ -134,6 +135,35 @@ namespace MyBeers.Api.Controllers
             }
         }
 
+		[Authorize(Roles = Role.Admin)]
+		[HttpGet]
+		public async Task<IActionResult> ChangeRequests([FromQuery]ChangeRequestsQuery changeRequestsQuery)
+        {
+			try
+			{
+				var changeReqs = await QueryDispatcher.DispatchAsync<ChangeRequestsQuery, IEnumerable<ChangeRequestsQuery.ChangeRequest>>(changeRequestsQuery);
+				return Ok(changeReqs);
+			}
+			catch (Exception)
+			{
+				return BadRequest();
+			}
+		}
+
+		[Authorize(Roles = Role.Admin)]
+		[HttpPost]
+		public async Task<IActionResult> MigrateBeers([FromBody]MigrateBeersCommand migrateBeersCommand)
+        {
+            try
+            {
+				await CommandDispatcher.DispatchAsync(migrateBeersCommand);
+				return AcceptedAtAction(nameof(MigrateBeers));
+            }
+            catch (Exception ex)
+            {
+				return BadRequest(ex.Message);
+            }
+        }
 
 		//[HttpPost]
 		//public async Task<IActionResult> CreateNewBeer(int productId)

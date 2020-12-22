@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace MyBeers.BeerLib.QueryHandlers
 {
-    public class SearchBeerQueryHandler : BaseQueryHandler<Domain.Beer, SearchBeerQuery, IEnumerable<SearchBeerQuery.Beer>>
+    public class SearchBeerQueryHandler : BaseQueryHandler<OldBeer, SearchBeerQuery, IEnumerable<SearchBeerQuery.Beer>>
     {
-        public SearchBeerQueryHandler(IMongoRepository<Beer> repository, IQueryDispatcher queryDispatcher) : base(repository, queryDispatcher)
+        public SearchBeerQueryHandler(IMongoRepository<OldBeer> repository, IQueryDispatcher queryDispatcher) : base(repository, queryDispatcher)
         {
         }
 
