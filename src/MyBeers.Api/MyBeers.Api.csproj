@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <_WebToolingArtifacts Remove="Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.NETCORE.Setup" Version="3.3.101" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.3" />
@@ -33,7 +41,6 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
-    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>
