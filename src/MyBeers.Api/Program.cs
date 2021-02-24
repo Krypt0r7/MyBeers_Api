@@ -23,6 +23,7 @@ namespace MyBeers.Api
                         .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
                     confBuilder.AddEnvironmentVariables();
                 })
+                .UseUrls("http://localhost:5002")
                 .UseStartup<Startup>();
     }
 }

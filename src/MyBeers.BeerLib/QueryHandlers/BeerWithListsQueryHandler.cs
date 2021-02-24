@@ -38,6 +38,7 @@ namespace MyBeers.BeerLib.QueryHandlers
                 State = beer.State,
                 Style = beer.Style,
                 Type = beer.Type,
+                Containers = beer.Containers.Select(x => new Api.Queries.Models.Container { Id = x.Id, Price = x.Price, ProductIdFromSystemet = x.ProductIdFromSystmet, RecycleFee = x.RecycleFee, SellStartDate = x.SellStartDate, Type = x.Type.ToString(), Volume = x.Volume, Ypk = x.Ypk}),
                 Lists = lists.Select(list => new BeerWithListsQuery.List
                 {
                     Id = list.Id,
